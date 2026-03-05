@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+<title>{% block titulo %} Listado de Cursos{% endblock %}</title>
+
+{% block navegador %}
+ <nav class="flex items-center gap-8">
+    <a class="text-white text-sm font-medium hover:opacity-80 transition-opacity" href="{% url 'inicio' %}">Inicio</a>
+    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'inicio_cursos' %}">Cursos</a>
+    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'registrar_curso' %}">Registrar Curso</a>
+</nav>
+{% endblock %}
+
+{% block contenido %}
+     <section class="bg-[#eeeeee] border-b border-border-color py-8">
+            <div class="max-w-7xl mx-auto px-6">
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Listado de Cursos</h1>
+                <nav class="flex text-xs text-slate-500 mt-1 gap-2">
+                    <!-- <a class="hover:underline" href="#">Dashboard</a>
+                    <span>/</span>
+                    <span class="text-slate-900">Current Section</span> -->
+                </nav>
+            </div>
+        </section>
+
+
+        <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+            <div class="bg-white border border-border-color rounded-sm min-h-[500px] flex items-center justify-center p-12">
+                <div class="text-center">
+                    <p class="text-slate-400 font-medium text-lg uppercase tracking-widest">Listado de Cursos</p>
+                    <p class="text-slate-300 text-sm mt-2">Acá se visualizan los cursos existentes en el colegio</p>
+                    <br>
+                     {% if lista_cursos %}
+                        <p>¡Excelente! Tenemos los siguientes cursos:</p>
+                        <div>
+                            <ol>
+                                {% for curso in lista_cursos %}
+                                    <li>{{ curso }}</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    {% else %}
+                        <p><strong>AVISO:</strong> Actualmente no hay cursos para listar.</p>
+                    {% endif %}
+                    <!-- Fin de Contenido generado dinámicamente -->
+                </div>
+
+            </div>
+        </main>
+
+{% endblock %}

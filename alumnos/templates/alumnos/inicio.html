@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+<title>{% block titulo %} Portal de Alumnos {% endblock %}</title>
+
+
+{% block navegador %}
+ <nav class="flex items-center gap-8">
+    <a class="text-white text-sm font-medium hover:opacity-80 transition-opacity" href="{% url 'inicio' %}">Inicio</a>
+    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'lista_alumnos' %}">Lista de Alumnos</a>
+    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'registrar_alumno' %}">Registrar Alumno</a>
+</nav>
+{% endblock %}
+
+{% block contenido %}
+
+        <section class="bg-[#eeeeee] border-b border-border-color py-8">
+            <div class="max-w-7xl mx-auto px-6">
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Gestión de Alumnos</h1>
+                <nav class="flex text-xs text-slate-500 mt-1 gap-2">
+                    <a class="hover:underline" href="#">Dashboard</a>
+                    <span>/</span>
+                    <span class="text-slate-900">Current Section</span>
+                </nav>
+            </div>
+        </section>
+
+
+          <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+
+          <div class="relative w-full h-[300px] rounded-lg overflow-hidden shadow-sm border border-border-color">
+            <img alt="Estudiantes en el campus" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsWU4wcP7AkiSXOL8749Qed0xsPk0KCVP1ydUtabagnsurje6y1YdxKq5o3wQtIKspW2PEZxRuwkxDgkfmiIAtiAu9UE8O-rJYrpbldqrUYDk5UtzTNfcG46wuyFNShDZa1sLdx1tylivnsLPrGcQTqJ-0n3NaIhf3M5sIMKEyXz2sGVUBLFpNID6eHRt5bIbjdbvxM42QNwASxhGDfAW8qiS1_hNCd0nADUa5kRIPmEOFZdO-OmhDxlAKY3NkxbTSUSVcW7IYPNki"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent flex items-center px-12">
+            <div class="max-w-md">
+            <h2 class="text-white text-3xl font-bold mb-2">Comunidad Estudiantil</h2>
+            <p class="text-white/90 text-sm leading-relaxed">Administre y consulte la información académica, registros de asistencia y expedientes personales de todos los alumnos matriculados.</p>
+            </div>
+            </div>
+          </div>
+
+            <!--
+            <div class="bg-white border border-border-color rounded-sm min-h-[500px] flex items-center justify-center p-12">
+                <div class="text-center">
+                    <p class="text-slate-400 font-medium text-lg uppercase tracking-widest">Bienvenido a tu plataforma estudiantil</p>
+                    <p class="text-slate-300 text-sm mt-2">Aqui podras revisar tus datos personales, notas, horario, entre otras opciones</p>
+                </div>
+            </div>
+            -->
+        </main>
+
+{% endblock %}
