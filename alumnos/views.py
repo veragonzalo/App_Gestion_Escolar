@@ -9,7 +9,7 @@ def portal_alumnos(request):
     return render(request, 'alumnos/inicio.html')
 
 def lista_alumnos(request):
-    alumnos = ["juan", "pedro", "luis"]
+    alumnos = ["Gonzalo Vera", "Pedro Guzman", "Luis Torres", "Maria Barria"]
     contexto = {
         "lista_alumnos": alumnos
     }
@@ -24,11 +24,14 @@ def nuevo_alumno(request):
         if form.is_valid():
             nombre = form.cleaned_data['nombre']
             apellido = form.cleaned_data['apellido']
-            correo = form.cleaned_data['correo_electronico']
+            edad = form.cleaned_data['edad']
+            curso = form.cleaned_data['curso']
+
             contexto_post = {
                 "nombre": nombre,
                 "apellido": apellido,
-                "correo_electronico": correo,
+                "edad": edad,
+                "curso": curso,
             }
 
             # aca se deberian tomar las variables y guardarlas en la base de datos

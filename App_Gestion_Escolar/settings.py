@@ -31,15 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'alumnos.apps.AlumnosConfig',
+    'profesores.apps.ProfesoresConfig',
+    'cursos.apps.CursosConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'alumnos.apps.AlumnosConfig',
-    'profesores.apps.ProfesoresConfig',
-    'cursos.apps.CursosConfig'
 ]
 
 MIDDLEWARE = [
@@ -127,10 +127,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 LOGIN_REDIRECT_URL = '/'
 
 # gps en caso de fracaso:  cunado usuario no se logea con exito
-LOGOUT_REDIRECT_URL = '/login/'
+# LOGOUT_REDIRECT_URL = '/login/'
 
 # nueva ubicacion del archivo login.html
-LOGIN_URL = 'login'
+LOGIN_URL = '/login/'
 
 
 

@@ -8,7 +8,7 @@ def portal_cursos(request):
 
 
 def lista_cursos(request):
-    cursos = ["Kinder A", "Primer Basico C", "Segundo Basico A", "Terceiro Basico A", "Quarto Basico A", "Quinto Basico A"]
+    cursos = ["Kinder A", "Primer Basico C", "Segundo Basico A", "Terceiro Basico A", "Quarto Basico A", "Quinto Basico A", "Sexto Basico A"]
     contexto = {
         "lista_cursos": cursos
     }

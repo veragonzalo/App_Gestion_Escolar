@@ -1,0 +1,377 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | Gestión Liceo Digital{% endblock %}
+
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 15px;">
+    <!-- Icono de la institución -->
+    <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ffd700;">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+    </div>
+
+    <!-- Título principal -->
+    <div>
+        <h1 id="site-name" style="margin: 0; line-height: 1.2;">
+            <a href="{% url 'admin:index' %}">Administración Central</a>
+        </h1>
+        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 400;">
+            Liceo Digital - Sistema de Gestión Escolar
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block usertools %}
+<div id="user-tools">
+    {% if has_permission %}
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- Icono de usuario -->
+            <div style="background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+
+            <!-- Información del usuario -->
+            <div style="text-align: right;">
+                <p style="margin: 0; color: white; font-weight: 600; font-size: 14px;">
+                    {% firstof user.get_short_name user.get_username %}
+                </p>
+                <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 11px;">
+                    {% if user.is_superuser %}Superusuario{% else %}Administrador{% endif %}
+                </p>
+            </div>
+
+            <!-- Enlaces de usuario -->
+            <div style="display: flex; gap: 10px; margin-left: 10px;">
+                {% if user.is_active and user.is_staff %}
+                    {% url 'django-admindocs-docroot' as docsroot %}
+                    {% if docsroot %}
+                        <a href="{{ docsroot }}" style="color: rgba(255,255,255,0.9); text-decoration: none; padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; font-size: 13px; transition: all 0.3s;">
+                            Documentación
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.has_usable_password %}
+                    <a href="{% url 'admin:password_change' %}" style="color: rgba(255,255,255,0.9); text-decoration: none; padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; font-size: 13px; transition: all 0.3s;">
+                        Cambiar contraseña
+                    </a>
+                {% endif %}
+
+               <form action="{% url 'admin:logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                        style="color: white; text-decoration: none; padding: 6px 12px; background: rgba(220,53,69,0.8); border-radius: 6px; font-size: 13px; font-weight: 600; border:none; cursor:pointer;">
+                        Cerrar sesión
+                    </button>
+               </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* ===== BRANDING - HEADER PRINCIPAL ===== */
+    #header {
+        background: linear-gradient(135deg, #002147 0%, #003063 100%) !important;
+        color: #fff !important;
+        padding: 20px 40px !important;
+        border-bottom: 3px solid #ffd700 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    #site-name a {
+        color: #ffffff !important;
+        font-size: 24px !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    #site-name a:hover {
+        color: #ffd700 !important;
+        transition: color 0.3s ease !important;
+    }
+
+    /* ===== USER TOOLS - HERRAMIENTAS DE USUARIO ===== */
+    #user-tools {
+        padding: 0 !important;
+        margin: 0 !important;
+        float: right !important;
+    }
+
+    #user-tools a:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ===== BARRA DE NAVEGACIÓN ===== */
+    .breadcrumbs {
+        background-color: #f8f9fa !important;
+        border-bottom: 2px solid #002147 !important;
+        padding: 12px 40px !important;
+        font-size: 13px !important;
+    }
+
+    .breadcrumbs a {
+        color: #002147 !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+    }
+
+    .breadcrumbs a:hover {
+        color: #003063 !important;
+        text-decoration: underline !important;
+    }
+
+    /* ===== CONTENIDO PRINCIPAL ===== */
+    #content {
+        padding: 30px 40px !important;
+    }
+
+    /* ===== BOTONES PRINCIPALES ===== */
+    .submit-row input[type="submit"],
+    .button,
+    input[type="submit"],
+    input[type="button"],
+    .submit-row input,
+    button {
+        background: #002147 !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 20px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+
+    .submit-row input[type="submit"]:hover,
+    .button:hover,
+    input[type="submit"]:hover,
+    input[type="button"]:hover,
+    button:hover {
+        background: #003063 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 33, 71, 0.3) !important;
+    }
+
+    /* ===== BOTONES ADD y CHANGE del Dashboard ===== */
+    .addlink,
+    .changelink {
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .addlink {
+        background: #28a745 !important;
+        color: white !important;
+        margin-right: 8px !important;
+    }
+
+    .addlink:hover {
+        background: #218838 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+    }
+
+
+    .changelink,
+    .changelink:link,
+    .changelink:visited,
+    .changelink:hover,
+    .changelink:active {
+    background: #002147 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+    .changelink:hover {
+        background: #003063 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 33, 71, 0.3) !important;
+    }
+
+    /* ===== BOTONES DE ELIMINAR (Rojo) ===== */
+    .deletelink,
+    .deletelink-box a {
+        background: #dc3545 !important;
+        color: white !important;
+    }
+
+    .deletelink:hover,
+    .deletelink-box a:hover {
+        background: #c82333 !important;
+    }
+
+    /* ===== MÓDULOS DEL DASHBOARD ===== */
+    .module {
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        margin-bottom: 20px !important;
+        background: white !important;
+    }
+
+    .module h2,
+    .module caption {
+        background: linear-gradient(135deg, #002147 0%, #003063 100%) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 15px 20px !important;
+        border-radius: 0 !important;
+        font-size: 16px !important;
+        letter-spacing: 0.3px !important;
+        text-align: left !important;
+    }
+
+    .module table {
+        border-radius: 0 0 8px 8px !important;
+        background: white !important;
+        width: 100% !important;
+    }
+
+    .module th,
+    .module td {
+        background-color: white !important;
+        color: #333 !important;
+        padding: 12px 20px !important;
+        text-align: left !important;
+    }
+
+    .module th a,
+    .module td a {
+        color: #333 !important;
+        font-weight: 500 !important;
+    }
+
+    .module tr {
+        background-color: white !important;
+    }
+
+    .module tr:hover {
+        background-color: #f8f9fa !important;
+    }
+
+    /* ===== TABLAS ===== */
+    thead th {
+        background: #002147 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 12px !important;
+    }
+
+    tr.selected {
+        background-color: rgba(0, 33, 71, 0.1) !important;
+    }
+
+    /* ===== RESALTADO DE HOVER EN FILAS ===== */
+    #result_list tbody tr:hover {
+        background-color: rgba(0, 33, 71, 0.05) !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    /* ===== CAMPOS DE FORMULARIO ===== */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #002147 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.1) !important;
+    }
+
+    /* ===== MENSAJES DE ÉXITO/ERROR ===== */
+    .messagelist .success {
+        background-color: #28a745 !important;
+        color: white !important;
+    }
+
+    .messagelist .error {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    .messagelist .warning {
+        background-color: #ffc107 !important;
+        color: #333 !important;
+    }
+
+    /* ===== PAGINACIÓN ===== */
+    .paginator a:link,
+    .paginator a:visited {
+        background: white !important;
+        border: 1px solid #002147 !important;
+        color: #002147 !important;
+        padding: 5px 10px !important;
+        border-radius: 4px !important;
+    }
+
+    .paginator a:hover {
+        background: #002147 !important;
+        color: white !important;
+    }
+
+    .paginator .this-page {
+        background: #002147 !important;
+        color: white !important;
+        padding: 5px 10px !important;
+        border-radius: 4px !important;
+    }
+
+    /* ===== MEJORAS VISUALES GENERALES ===== */
+    body {
+        background-color: #f5f7fa !important;
+    }
+
+    #content-main {
+        background: white !important;
+        padding: 30px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* ===== DASHBOARD CARDS ===== */
+    #content-main > div[class*="module"] {
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+
+    #content-main > div[class*="module"]:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 16px rgba(0, 33, 71, 0.15) !important;
+    }
+</style>
+{% endblock %}

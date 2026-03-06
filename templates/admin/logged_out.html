@@ -1,0 +1,118 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+    <div style="max-width: 600px; width: 100%; text-align: center;">
+
+        <!-- Tarjeta de logout exitoso -->
+        <div style="background: white; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); padding: 60px 40px; border-top: 4px solid #002147;">
+
+            <!-- Icono de éxito -->
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 50%; margin-bottom: 30px; box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </div>
+
+            <!-- Título -->
+            <h1 style="color: #002147; font-size: 32px; font-weight: 700; margin: 0 0 16px 0; letter-spacing: -0.5px;">
+                Sesión Cerrada Exitosamente
+            </h1>
+
+            <!-- Mensaje -->
+            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 0 0 40px 0;">
+                Gracias por utilizar el Sistema de Gestión Escolar del Liceo Digital.<br>
+                Has cerrado sesión de forma segura.
+            </p>
+
+            <!-- Botones de acción -->
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                <!-- Botón principal - Volver a iniciar sesión -->
+                <a href="{% url 'admin:index' %}" style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    background: linear-gradient(135deg, #002147 0%, #003063 100%);
+                    color: white;
+                    text-decoration: none;
+                    padding: 14px 40px;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    font-size: 16px;
+                    box-shadow: 0 4px 12px rgba(0, 33, 71, 0.3);
+                    transition: all 0.3s ease;
+                    min-width: 280px;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 33, 71, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0, 33, 71, 0.3)';">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    Iniciar Sesión Nuevamente
+                </a>
+
+                <!-- Botón secundario - Ir a la página principal -->
+                <a href="{% url 'inicio' %}" style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    background: white;
+                    color: #002147;
+                    text-decoration: none;
+                    padding: 14px 40px;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    font-size: 16px;
+                    border: 2px solid #002147;
+                    transition: all 0.3s ease;
+                    min-width: 280px;
+                " onmouseover="this.style.background='#f8f9fa';" onmouseout="this.style.background='white';">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Ir a Página Principal
+                </a>
+            </div>
+
+            <!-- Separador -->
+            <div style="margin: 40px 0 30px 0; border-top: 1px solid #e0e0e0;"></div>
+
+            <!-- Información de seguridad -->
+            <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border-left: 4px solid #ffc107;">
+                <div style="display: flex; align-items: start; gap: 12px; text-align: left;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffc107" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div>
+                        <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.6;">
+                            <strong style="color: #333;">Recordatorio de Seguridad:</strong><br>
+                            Si no cerraste sesión tú mismo, por favor contacta al administrador del sistema inmediatamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer de la página de logout -->
+        <div style="margin-top: 40px; color: #999; font-size: 13px;">
+            <p style="margin: 0;">
+                © 2024 Liceo Digital - Sistema de Gestión Escolar
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

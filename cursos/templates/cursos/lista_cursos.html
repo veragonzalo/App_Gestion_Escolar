@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
-
-<title>{% block titulo %} Listado de Cursos{% endblock %}</title>
+<title>{% block titulo %}Listado de Cursos{% endblock %}</title>
 
 {% block navegador %}
- <nav class="flex items-center gap-8">
+<nav class="flex items-center gap-8">
     <a class="text-white text-sm font-medium hover:opacity-80 transition-opacity" href="{% url 'inicio' %}">Inicio</a>
     <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'inicio_cursos' %}">Cursos</a>
     <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'registrar_curso' %}">Registrar Curso</a>
@@ -12,40 +11,117 @@
 {% endblock %}
 
 {% block contenido %}
-     <section class="bg-[#eeeeee] border-b border-border-color py-8">
-            <div class="max-w-7xl mx-auto px-6">
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Listado de Cursos</h1>
-                <nav class="flex text-xs text-slate-500 mt-1 gap-2">
-                    <!-- <a class="hover:underline" href="#">Dashboard</a>
-                    <span>/</span>
-                    <span class="text-slate-900">Current Section</span> -->
-                </nav>
-            </div>
-        </section>
+    <section class="bg-[#eeeeee] border-b border-border-color py-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Listado de Cursos</h1>
+            <nav class="flex text-xs text-slate-500 mt-1 gap-2">
+                <a class="hover:underline" href="{% url 'inicio' %}">Inicio</a>
+                <span>/</span>
+                <a class="hover:underline" href="{% url 'inicio_cursos' %}">Cursos</a>
+                <span>/</span>
+                <span class="text-slate-900">Listado</span>
+            </nav>
+        </div>
+    </section>
 
+    <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
 
-        <main class="flex-grow w-full max-w-7xl mx-auto p-8">
-            <div class="bg-white border border-border-color rounded-sm min-h-[500px] flex items-center justify-center p-12">
-                <div class="text-center">
-                    <p class="text-slate-400 font-medium text-lg uppercase tracking-widest">Listado de Cursos</p>
-                    <p class="text-slate-300 text-sm mt-2">Acá se visualizan los cursos existentes en el colegio</p>
-                    <br>
-                     {% if lista_cursos %}
-                        <p>¡Excelente! Tenemos los siguientes cursos:</p>
-                        <div>
-                            <ol>
-                                {% for curso in lista_cursos %}
-                                    <li>{{ curso }}</li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                    {% else %}
-                        <p><strong>AVISO:</strong> Actualmente no hay cursos para listar.</p>
-                    {% endif %}
-                    <!-- Fin de Contenido generado dinámicamente -->
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-[#002147] to-[#003063] p-8">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <span class="material-symbols-outlined text-white text-4xl">menu_book</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Cursos Disponibles</h2>
+                        <p class="text-white/70 text-sm mt-1">Catálogo de cursos existentes en la institución</p>
+                    </div>
                 </div>
-
             </div>
-        </main>
 
+            <!-- Contenido -->
+            <div class="p-8">
+                {% if lista_cursos %}
+                    <!-- Estadísticas -->
+                    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-blue-600 text-2xl">info</span>
+                            <div>
+                                <p class="text-blue-900 font-semibold">Total de cursos disponibles</p>
+                                <p class="text-blue-700 text-sm">Actualmente hay <strong>{{ lista_cursos|length }}</strong> curso{{ lista_cursos|length|pluralize:"s" }} en el sistema</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de cursos -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-2 border-slate-200">
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">#</th>
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-lg">menu_book</span>
+                                            <span>Nombre del Curso</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for curso in lista_cursos %}
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 px-4">
+                                            <div class="w-10 h-10 bg-[#002147] text-white rounded-lg flex items-center justify-center font-bold">
+                                                {{ forloop.counter }}
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                                                    <span class="material-symbols-outlined text-emerald-600 text-xl">menu_book</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-slate-900 text-lg">{{ curso }}</p>
+                                                    <p class="text-slate-500 text-xs">Curso activo</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% else %}
+                    <!-- Estado vacío -->
+                    <div class="text-center py-16">
+                        <div class="inline-flex items-center justify-center w-24 h-24 bg-slate-100 rounded-full mb-6">
+                            <span class="material-symbols-outlined text-slate-400 text-5xl">library_books</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">No hay cursos registrados</h3>
+                        <p class="text-slate-500 mb-6">Actualmente no hay cursos en el sistema. Comience registrando el primer curso.</p>
+                        <a
+                            href="{% url 'registrar_curso' %}"
+                            class="inline-flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-[#002147]/20 transition-all"
+                        >
+                            <span class="material-symbols-outlined">add</span>
+                            <span>Registrar Primer Curso</span>
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- Botón para volver -->
+                <div class="flex justify-center mt-8 pt-8 border-t border-slate-200">
+                    <a
+                        href="{% url 'inicio_cursos' %}"
+                        class="bg-[#002147] hover:bg-[#003063] text-white font-bold py-3.5 px-10 rounded-lg shadow-lg shadow-[#002147]/20 transition-all flex items-center justify-center gap-2"
+                    >
+                        <span class="material-symbols-outlined text-xl">arrow_back</span>
+                        <span>Volver al Portal de Cursos</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}
