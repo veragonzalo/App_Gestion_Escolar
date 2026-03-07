@@ -3,13 +3,33 @@
 <title>{% block titulo %}Listado de Cursos{% endblock %}</title>
 
 {% block navegador %}
-<nav class="flex items-center gap-8">
-    <a class="text-white text-sm font-medium hover:opacity-80 transition-opacity" href="{% url 'inicio' %}">Inicio</a>
-    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'inicio_cursos' %}">Cursos</a>
-    <a class="text-white/80 text-sm font-medium hover:text-white transition-colors" href="{% url 'registrar_curso' %}">Registrar Curso</a>
-</nav>
-{% endblock %}
-
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-white/90 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio' %}">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">home</span>
+                        Inicio
+                    </span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_alumnos' %}">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">school</span>
+                        Alumnos
+                    </span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_profesores' %}">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">badge</span>
+                        Profesores
+                    </span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_cursos' %}">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">menu_book</span>
+                        Cursos
+                    </span>
+                </a>
+            </nav>
+            {% endblock %}
 {% block contenido %}
     <section class="bg-[#eeeeee] border-b border-border-color py-8">
         <div class="max-w-7xl mx-auto px-6">
