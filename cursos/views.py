@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Curso
@@ -32,6 +32,12 @@ def lista_cursos(request):
     return render(request, 'cursos/lista_cursos.html', contexto)
 
 
+def detalle_curso(request, codigo):
+    curso = get_object_or_404(Curso, codigo=codigo)
+    return render(request, 'cursos/detalle_curso.html', {'curso': curso})
+
+
+
 def nuevo_curso(request):
     if request.method == "POST":
         form = CursoForm(request.POST)
@@ -51,3 +57,33 @@ def nuevo_curso(request):
         "form": form
     }
     return render(request, 'cursos/registro_curso.html', contexto)
+
+def editar_curso(request, codigo):
+
+    curso = get_object_or_404(Curso, codigo=codigo)
+
+    if request.method == 'POST':
+        form = CursoForm(request.POST, instance=curso)
+        if form.is_valid():
+            form.save()
+            return redirect('detalle_curso', codigo=codigo)
+    else:
+        form = CursoForm(instance=curso)
+
+    return render(request, 'cursos/editar_curso.html', {
+        'form': form,
+        'curso': curso
+    })
+
+
+def eliminar_curso(request, codigo):
+
+    curso = get_object_or_404(Curso, codigo=codigo)
+
+    if request.method == 'POST':
+        curso.delete()
+        return redirect('lista_cursos')
+
+    return render(request, 'cursos/confirmar_eliminar.html', {
+        'curso': curso
+    })
