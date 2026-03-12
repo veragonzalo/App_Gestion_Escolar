@@ -1,10 +1,11 @@
 from django.contrib import admin
-from . models import Alumno
+from .models import Alumno
+
 
 class AlumnoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'edad', 'curso')
-    search_fields = ('nombre', 'apellido')
+    list_display = ('rut', 'nombre', 'apellido', 'fecha_nacimiento')
+    search_fields = ('rut', 'nombre', 'apellido')
+    ordering = ('apellido', 'nombre')
 
 
 admin.site.register(Alumno, AlumnoAdmin)
-

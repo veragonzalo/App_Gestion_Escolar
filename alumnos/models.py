@@ -1,17 +1,15 @@
 from django.db import models
 
-# las clases aca creadas seusan para crear la BD:
-#1. Aca se crean clases python
-#2. Se leeran y creara un plano para migrarlas a  la BD
-
-
 class Alumno(models.Model):
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    edad = models.IntegerField()
-    curso = models.CharField(max_length=100)
+    rut = models.CharField(max_length=12, primary_key=True, verbose_name="RUT")
+    nombre = models.CharField(max_length=100, verbose_name="Nombre")
+    apellido = models.CharField(max_length=100, verbose_name="Apellido")
+    fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
+
+    class Meta:
+        verbose_name = "Alumno"
+        verbose_name_plural = "Alumnos"
+        ordering = ['apellido', 'nombre']
 
     def __str__(self):
-        return f'{self.nombre} {self.apellido} {self.curso}'
-
-
+        return f"{self.nombre} {self.apellido} ({self.rut})"

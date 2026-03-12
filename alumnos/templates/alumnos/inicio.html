@@ -96,13 +96,13 @@
             </div>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Stats Cards - CON DATOS REALES -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
                 <div class="flex items-center justify-between mb-4">
                     <span class="material-symbols-outlined text-5xl opacity-80">groups</span>
                     <div class="text-right">
-                        <p class="text-3xl font-bold">0</p>
+                        <p class="text-3xl font-bold">{{ total_alumnos }}</p>
                         <p class="text-sm opacity-90">Total Alumnos</p>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <span class="material-symbols-outlined text-5xl opacity-80">person_add</span>
                     <div class="text-right">
-                        <p class="text-3xl font-bold">0</p>
+                        <p class="text-3xl font-bold">{{ nuevos_este_mes }}</p>
                         <p class="text-sm opacity-90">Nuevos este mes</p>
                     </div>
                 </div>
@@ -122,8 +122,8 @@
                 <div class="flex items-center justify-between mb-4">
                     <span class="material-symbols-outlined text-5xl opacity-80">school</span>
                     <div class="text-right">
-                        <p class="text-3xl font-bold">0</p>
-                        <p class="text-sm opacity-90">Cursos activos</p>
+                        <p class="text-3xl font-bold">{{ cursos_activos }}</p>
+                        <p class="text-sm opacity-90">Inscripciones</p>
                     </div>
                 </div>
             </div>

@@ -1,46 +1,133 @@
-from django.shortcuts import render, redirect
-from . import forms
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .models import Alumno
+from .forms import AlumnoForm
 
-# Create your views here.
 
 @login_required
 def portal_alumnos(request):
-    return render(request, 'alumnos/inicio.html')
 
+    total_alumnos = Alumno.objects.count()
+
+    contexto = {
+        'total_alumnos': total_alumnos,
+        'nuevos_este_mes': 0,
+        'cursos_activos': 0,
+    }
+
+    return render(request, 'alumnos/inicio.html', contexto)
+
+
+@login_required
 def lista_alumnos(request):
-    alumnos = ["Gonzalo Vera", "Pedro Guzman", "Luis Torres", "Maria Barria"]
+
+    alumnos = Alumno.objects.all()
+
     contexto = {
         "lista_alumnos": alumnos
     }
+
     return render(request, 'alumnos/lista_alumnos.html', contexto)
 
 
+@login_required
 def nuevo_alumno(request):
-    if request.method == "GET":
-        form = forms.AlumnoForm()
-    else:
-        form = forms.AlumnoForm(request.POST)
+
+    if request.method == "POST":
+
+        form = AlumnoForm(request.POST)
+
         if form.is_valid():
-            nombre = form.cleaned_data['nombre']
-            apellido = form.cleaned_data['apellido']
-            edad = form.cleaned_data['edad']
-            curso = form.cleaned_data['curso']
 
-            contexto_post = {
-                "nombre": nombre,
-                "apellido": apellido,
-                "edad": edad,
-                "curso": curso,
-            }
+            alumno = form.save()
 
-            # aca se deberian tomar las variables y guardarlas en la base de datos
-            # enviar mensaje de confirmacion " nuevo alumno ingresado exitosamente"
-            return render(request, 'alumnos/registro_exito.html', contexto_post)
+            messages.success(
+                request,
+                f'¡Alumno {alumno.nombre} {alumno.apellido} registrado exitosamente!'
+            )
+
+            return redirect('lista_alumnos')
+
+        else:
+
+            messages.error(request, 'Por favor corrija los errores del formulario.')
+
+    else:
+
+        form = AlumnoForm()
+
     contexto = {
         "form": form
     }
-    return render(request,'alumnos/registro_alumno.html', contexto)
+
+    return render(request, 'alumnos/registro_alumno.html', contexto)
 
 
+@login_required
+def detalle_alumno(request, alumno_rut):
 
+    alumno = get_object_or_404(Alumno, rut=alumno_rut)
+
+    contexto = {
+        "alumno": alumno
+    }
+
+    return render(request, 'alumnos/detalle_alumno.html', contexto)
+
+
+@login_required
+def editar_alumno(request, alumno_rut):
+
+    alumno = get_object_or_404(Alumno, rut=alumno_rut)
+
+    if request.method == "POST":
+
+        form = AlumnoForm(request.POST, instance=alumno)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                f'¡Alumno {alumno.nombre} {alumno.apellido} actualizado exitosamente!'
+            )
+
+            return redirect('lista_alumnos')
+
+    else:
+
+        form = AlumnoForm(instance=alumno)
+
+    contexto = {
+        "form": form,
+        "alumno": alumno
+    }
+
+    return render(request, 'alumnos/editar_alumno.html', contexto)
+
+
+@login_required
+def eliminar_alumno(request, alumno_rut):
+
+    alumno = get_object_or_404(Alumno, rut=alumno_rut)
+
+    if request.method == "POST":
+
+        nombre_completo = f"{alumno.nombre} {alumno.apellido}"
+
+        alumno.delete()
+
+        messages.success(
+            request,
+            f'Alumno {nombre_completo} eliminado exitosamente.'
+        )
+
+        return redirect('lista_alumnos')
+
+    contexto = {
+        "alumno": alumno
+    }
+
+    return render(request, 'alumnos/confirmar_eliminar.html', contexto)

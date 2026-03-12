@@ -1,16 +1,30 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from . import forms
+from .models import Profesor
+from .forms import ProfesorForm
 
 
 @login_required
 def portal_profesores(request):
-    return render(request, 'profesores/inicio_profesores.html')
+    # Obtener estadísticas
+    total_profesores = Profesor.objects.count()
+    profesores_activos = total_profesores  # Todos están activos por defecto
+
+    # Contar especialidades únicas
+    especialidades = Profesor.objects.values_list('profesion', flat=True).distinct().count()
+
+    contexto = {
+        'total_profesores': total_profesores,
+        'profesores_activos': profesores_activos,
+        'especialidades': especialidades,
+    }
+
+    return render(request, 'profesores/inicio_profesores.html', contexto)
 
 
 def lista_profesores(request):
-    profesores = ["Juan Mayorga", "Omar Monsalve", "Felix Cañoles", "Sergio Perez", "Leticia Ojeda"]
+    profesores = Profesor.objects.all()
     contexto = {
         "lista_profesores": profesores
     }
@@ -19,40 +33,18 @@ def lista_profesores(request):
 
 def nuevo_profesor(request):
     if request.method == "POST":
-        form = forms.ProfesorForm(request.POST)
+        form = ProfesorForm(request.POST)
         if form.is_valid():
-            rut = form.cleaned_data['rut']
-            nombre = form.cleaned_data['nombre']
-            apellido = form.cleaned_data['apellido']
-            fecha_nacimiento = form.cleaned_data['fecha_nacimiento']
-            profesion = form.cleaned_data['profesion']
-
-            # Aquí deberías guardar en la base de datos
-            # Profesor.objects.create(
-            #     rut=rut,
-            #     nombre=nombre,
-            #     apellido=apellido,
-            #     fecha_nacimiento=fecha_nacimiento,
-            #     profesion=profesion
-            # )
-
-            contexto_post = {
-                "rut": rut,
-                "nombre": nombre,
-                "apellido": apellido,
-                "fecha_nacimiento": fecha_nacimiento,
-                "profesion": profesion,
-            }
-
-            # Agregar mensaje de éxito
-            messages.success(request, f'¡Profesor {nombre} {apellido} registrado exitosamente!')
-
-            return render(request, 'profesores/registro_exito.html', contexto_post)
+            try:
+                profesor = form.save()
+                messages.success(request, f'¡Profesor {profesor.nombre} {profesor.apellido} registrado exitosamente!')
+                return redirect('lista_profesores')
+            except Exception as e:
+                messages.error(request, f'Error al guardar: {str(e)}')
         else:
-            # Agregar mensaje de error si el formulario no es válido
             messages.error(request, 'Por favor, corrija los errores del formulario.')
     else:
-        form = forms.ProfesorForm()
+        form = ProfesorForm()
 
     contexto = {
         "form": form

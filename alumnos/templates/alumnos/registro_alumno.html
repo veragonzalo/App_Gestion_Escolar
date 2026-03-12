@@ -91,7 +91,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <!-- Grid de campos del formulario -->
+                <!-- Grid de campos del formulario - ACTUALIZADOS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {% for field in form %}
                         <div>
@@ -103,40 +103,29 @@
                             </label>
 
                             <div class="relative">
-                                <!-- Iconos según el tipo de campo -->
-                                {% if 'nombre' in field.name %}
+                                <!-- Iconos según el tipo de campo - ACTUALIZADOS -->
+                                {% if 'rut' in field.name %}
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">badge</span>
+                                {% elif 'nombre' in field.name %}
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">person</span>
                                 {% elif 'apellido' in field.name %}
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">person</span>
-                                {% elif 'edad' in field.name %}
-                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">cake</span>
-                                {% elif 'curso' in field.name %}
-                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">school</span>
+                                {% elif 'fecha' in field.name %}
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">calendar_today</span>
                                 {% else %}
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none z-10">edit</span>
                                 {% endif %}
 
                                 <!-- Campo de input -->
-                                {% if field.field.widget.input_type == 'textarea' %}
-                                    <textarea
-                                        name="{{ field.name }}"
-                                        id="{{ field.id_for_label }}"
-                                        class="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-[#002147] focus:border-[#002147] outline-none transition-all resize-none"
-                                        rows="3"
-                                        {% if field.field.required %}required{% endif %}
-                                    >{{ field.value|default_if_none:'' }}</textarea>
-                                {% else %}
-                                    <input
-                                        type="{{ field.field.widget.input_type }}"
-                                        name="{{ field.name }}"
-                                        id="{{ field.id_for_label }}"
-                                        class="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-[#002147] focus:border-[#002147] outline-none transition-all"
-                                        {% if field.value %}value="{{ field.value }}"{% endif %}
-                                        {% if field.field.required %}required{% endif %}
-                                        {% if 'edad' in field.name %}placeholder="Ej: 15"{% endif %}
-                                        {% if 'curso' in field.name %}placeholder="Ej: 3° Medio A"{% endif %}
-                                    />
-                                {% endif %}
+                                <input
+                                    type="{{ field.field.widget.input_type }}"
+                                    name="{{ field.name }}"
+                                    id="{{ field.id_for_label }}"
+                                    class="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-[#002147] focus:border-[#002147] outline-none transition-all"
+                                    {% if field.value %}value="{{ field.value }}"{% endif %}
+                                    {% if field.field.required %}required{% endif %}
+                                    {% if 'rut' in field.name %}placeholder="12.345.678-9"{% endif %}
+                                />
                             </div>
 
                             <!-- Mensajes de error por campo -->
@@ -156,7 +145,6 @@
                 </div>
 
                 <!-- Botones de acción -->
-
                 <div class="flex items-center gap-4 mt-8 pt-6 border-t border-slate-200">
                     <button
                         type="submit"
@@ -178,13 +166,13 @@
             </form>
         </div>
 
-        <!-- Nota informativa -->
+        <!-- Nota informativa - ACTUALIZADA -->
         <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex items-start gap-3">
                 <span class="material-symbols-outlined text-blue-500 text-xl">info</span>
                 <div class="flex-1">
                     <p class="text-blue-900 text-sm font-semibold">Información importante</p>
-                    <p class="text-blue-700 text-xs mt-1">Los campos marcados con <span class="text-red-500">*</span> son obligatorios. Asegúrese de completar toda la información requerida.</p>
+                    <p class="text-blue-700 text-xs mt-1">Los campos marcados con <span class="text-red-500">*</span> son obligatorios. El RUT debe ser único para cada alumno.</p>
                 </div>
             </div>
         </div>
