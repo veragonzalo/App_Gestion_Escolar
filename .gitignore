@@ -1,0 +1,15 @@
+
+# ── Variables de entorno ─────────────────────────────────
+.env
+.env.local
+.env.production
+
+# Entorno virtual
+.venv/
+venv/
+env/
+
+__pycache__/
+*.pyc
+db.sqlite3
+.venv/

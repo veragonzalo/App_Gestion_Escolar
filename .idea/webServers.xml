@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="9bcd3ec7-98b2-4bbb-a57b-00d66fedf717" name="colegio">
+        <fileTransfer rootFolder="/home/gestioncolegio" accessType="SFTP" host="ssh-gestioncolegio.alwaysdata.net" port="22" sshConfigId="3fb1e540-9f32-429b-8094-ccd4e2c66b29" sshConfig="gestioncolegio@ssh-gestioncolegio.alwaysdata.net:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
