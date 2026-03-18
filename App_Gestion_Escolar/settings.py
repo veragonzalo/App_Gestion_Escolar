@@ -34,7 +34,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 #ALLOWED_HOSTS = ['gestioncolegio.alwaysdata.net', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='gestioncolegio.alwaysdata.net,localhost,127.0.0.1').split(',')
 
 # Application definition
 
@@ -83,8 +83,16 @@ ROOT_URLCONF = 'App_Gestion_Escolar.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # <-- carpeta global
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
     }
 ]
 
