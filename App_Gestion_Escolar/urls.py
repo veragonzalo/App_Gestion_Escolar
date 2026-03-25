@@ -17,6 +17,9 @@ urlpatterns = [
     path("alumnos/", include("alumnos.urls")),
     path("cursos/", include("cursos.urls")),
     path("profesores/", include("profesores.urls")),
+    path("asistencia/", include("asistencia.urls")),
+    path("notas/", include("notas.urls")),
+    path("apoderados/", include("apoderados.urls")),
 
     # Autenticación
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),

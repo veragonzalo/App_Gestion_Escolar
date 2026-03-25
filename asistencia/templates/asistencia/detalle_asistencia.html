@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+<title>{% block titulo %}Detalle de Asistencia{% endblock %}</title>
+
+{% block navegador %}
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-white/90 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio' %}">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-lg">home</span>Inicio</span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_alumnos' %}">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-lg">school</span>Alumnos</span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_profesores' %}">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-lg">badge</span>Profesores</span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_cursos' %}">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-lg">menu_book</span>Cursos</span>
+                </a>
+                <a class="text-white/80 text-sm font-medium hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10" href="{% url 'inicio_asistencia' %}">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-lg">fact_check</span>Asistencia</span>
+                </a>
+            </nav>
+{% endblock %}
+
+{% block contenido %}
+<section class="bg-[#eeeeee] border-b border-border-color py-8">
+    <div class="max-w-7xl mx-auto px-6">
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Detalle de Asistencia</h1>
+        <nav class="flex text-xs text-slate-500 mt-1 gap-2">
+            <a class="hover:underline" href="{% url 'inicio' %}">Inicio</a>
+            <span>/</span>
+            <a class="hover:underline" href="{% url 'inicio_asistencia' %}">Asistencia</a>
+            <span>/</span>
+            <a class="hover:underline" href="{% url 'lista_asistencia' %}">Lista</a>
+            <span>/</span>
+            <span class="text-slate-900">Detalle</span>
+        </nav>
+    </div>
+</section>
+
+<main class="flex-grow w-full max-w-4xl mx-auto p-8">
+<div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+
+<div class="bg-gradient-to-r from-[#002147] to-[#003063] p-8">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[#002147] text-4xl">fact_check</span>
+</div>
+<div>
+<h2 class="text-3xl font-bold text-white">Registro #{{ asistencia.id }}</h2>
+<p class="text-blue-100 text-sm mt-1">Información del registro de asistencia</p>
+</div>
+</div>
+</div>
+
+<div class="p-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-indigo-600">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Fecha</p>
+<p class="text-lg font-bold text-slate-900">{{ asistencia.fecha|date:"d/m/Y" }}</p>
+</div>
+</div>
+</div>
+
+<div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-purple-600">menu_book</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Curso</p>
+<p class="text-lg font-bold text-slate-900">{{ asistencia.curso.nombre }}</p>
+</div>
+</div>
+</div>
+
+<div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-blue-600">person</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Alumno</p>
+<p class="text-lg font-bold text-slate-900">{{ asistencia.alumno.nombre }} {{ asistencia.alumno.apellido }}</p>
+<p class="text-slate-500 text-xs">{{ asistencia.alumno.rut }}</p>
+</div>
+</div>
+</div>
+
+<div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 {% if asistencia.estado == 'P' %}bg-emerald-100{% elif asistencia.estado == 'A' %}bg-red-100{% else %}bg-amber-100{% endif %} rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined {% if asistencia.estado == 'P' %}text-emerald-600{% elif asistencia.estado == 'A' %}text-red-600{% else %}text-amber-600{% endif %}">
+{% if asistencia.estado == 'P' %}check_circle{% elif asistencia.estado == 'A' %}cancel{% else %}schedule{% endif %}
+</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Estado</p>
+<p class="text-lg font-bold text-slate-900">{{ asistencia.get_estado_display }}</p>
+</div>
+</div>
+</div>
+
+{% if asistencia.observacion %}
+<div class="bg-slate-50 rounded-lg p-4 border border-slate-200 md:col-span-2">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-pink-600">notes</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Observación</p>
+<p class="text-lg font-bold text-slate-900">{{ asistencia.observacion }}</p>
+</div>
+</div>
+</div>
+{% endif %}
+
+</div>
+
+<div class="flex flex-col md:flex-row items-center gap-4 mt-8 pt-8 border-t border-slate-200">
+<a href="{% url 'editar_asistencia' asistencia.id %}" class="w-full md:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 px-8 rounded-lg transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">edit</span>
+<span>Editar Registro</span>
+</a>
+<a href="{% url 'lista_asistencia' %}" class="w-full md:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-8 rounded-lg transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+<span>Volver a la Lista</span>
+</a>
+</div>
+
+</div>
+</div>
+</main>
+{% endblock %}

@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from email.policy import default
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,14 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 #ALLOWED_HOSTS = ['gestioncolegio.alwaysdata.net', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='gestioncolegio.alwaysdata.net,localhost,127.0.0.1').split(',')
+#ALLOWED_HOSTS = config(
+#    'ALLOWED_HOSTS',
+#    default='localhost,127.0.0.1',
+#    cast=Csv()
+#)
+
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -42,6 +46,9 @@ INSTALLED_APPS = [
     'alumnos.apps.AlumnosConfig',
     'profesores.apps.ProfesoresConfig',
     'cursos.apps.CursosConfig',
+    'asistencia.apps.AsistenciaConfig',
+    'notas.apps.NotasConfig',
+    'apoderados.apps.ApoderadosConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -113,19 +120,17 @@ WSGI_APPLICATION = 'App_Gestion_Escolar.wsgi.application'
 
 # Configuración de base de datos dinámica
 DATABASES = {
-'default': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': config('DB_NAME'),
-'USER': config('DB_USER'),
-'PASSWORD': config('DB_PASSWORD'),
-'HOST': config('DB_HOST'),
-'PORT': config('DB_PORT', default='3306'),
-    'OPTIONS': {
-        'charset': 'utf8mb4',
-        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-    },
-    'CONN_MAX_AGE': 60,
-}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':     config('DB_NAME',       default='gestioncolegio_gestion_escolar_bd'),
+        'USER':     config('DB_USER',       default=''),
+        'PASSWORD': config('DB_PASSWORD',   default=''),
+        'HOST':     config('DB_HOST',       default='127.0.0.1'),
+        'PORT':     config('DB_PORT',       default='3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    }
 }
 
 # Password validation
