@@ -17,7 +17,7 @@
       </div>
       <div class="flex gap-3 flex-wrap">
         {% if perfil.puede_editar or user.is_superuser %}
-        <a href="{% url 'nuevo_alumno' %}" class="flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow">
+        <a href="{% url 'registrar_alumno' %}" class="flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow">
           <span class="material-symbols-outlined text-lg">person_add</span>Nuevo Alumno
         </a>
         {% endif %}
