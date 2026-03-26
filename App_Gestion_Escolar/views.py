@@ -8,6 +8,7 @@ from asistencia.models import Asistencia
 from apoderados.models import Apoderado
 
 
+@login_required
 def inicio(request):
     contexto = {
         'total_alumnos': Alumno.objects.count(),
