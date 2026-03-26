@@ -56,4 +56,24 @@ class AlumnoForm(forms.ModelForm):
             rut = rut.strip()
             if len(rut) < 9:
                 raise forms.ValidationError('Ingrese un RUT válido.')
+            if not _validar_rut(rut):
+                raise forms.ValidationError('El dígito verificador del RUT no es válido.')
         return rut
+
+
+def _validar_rut(rut):
+    """Valida el dígito verificador de un RUT chileno (formato 12.345.678-9 o 12345678-9)."""
+    rut = rut.upper().replace('.', '').replace('-', '').strip()
+    if len(rut) < 2:
+        return False
+    cuerpo, dv = rut[:-1], rut[-1]
+    if not cuerpo.isdigit():
+        return False
+    suma = 0
+    multiplo = 2
+    for c in reversed(cuerpo):
+        suma += int(c) * multiplo
+        multiplo = multiplo + 1 if multiplo < 7 else 2
+    resto = suma % 11
+    dv_esperado = '0' if resto == 0 else 'K' if resto == 1 else str(11 - resto)
+    return dv == dv_esperado

@@ -177,4 +177,44 @@
             </div>
         </div>
     </main>
+
+<script>
+(function () {
+  function validarRut(rut) {
+    rut = rut.toUpperCase().replace(/\./g, '').replace(/-/g, '').trim();
+    if (rut.length < 2) return false;
+    var cuerpo = rut.slice(0, -1);
+    var dv = rut.slice(-1);
+    if (!/^\d+$/.test(cuerpo)) return false;
+    var suma = 0, multiplo = 2;
+    for (var i = cuerpo.length - 1; i >= 0; i--) {
+      suma += parseInt(cuerpo[i]) * multiplo;
+      multiplo = multiplo < 7 ? multiplo + 1 : 2;
+    }
+    var resto = suma % 11;
+    var dvEsperado = resto === 0 ? '0' : resto === 1 ? 'K' : String(11 - resto);
+    return dv === dvEsperado;
+  }
+
+  var rutInput = document.getElementById('id_rut');
+  if (!rutInput) return;
+  var hint = document.createElement('p');
+  hint.className = 'text-xs mt-1.5 flex items-center gap-1 hidden';
+  rutInput.parentNode.parentNode.appendChild(hint);
+
+  rutInput.addEventListener('input', function () {
+    var val = rutInput.value.trim();
+    if (val.length < 9) { hint.classList.add('hidden'); return; }
+    var ok = validarRut(val);
+    hint.classList.remove('hidden', 'text-emerald-600', 'text-red-500');
+    if (ok) {
+      hint.classList.add('text-emerald-600');
+      hint.innerHTML = '<span class="material-symbols-outlined text-sm">check_circle</span> RUT válido';
+    } else {
+      hint.classList.add('text-red-500');
+      hint.innerHTML = '<span class="material-symbols-outlined text-sm">error</span> Dígito verificador incorrecto';
+    }
+  });
+})();
+</script>
 {% endblock %}

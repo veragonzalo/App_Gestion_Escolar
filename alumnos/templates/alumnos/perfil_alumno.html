@@ -94,36 +94,49 @@
                     {% endif %}
                 </div>
 
-                <!-- Asistencia -->
+                <!-- Asistencia por curso -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Resumen de Asistencia</h3>
-                    {% if total_asistencias > 0 %}
-                        <!-- Barra de progreso -->
-                        <div class="mb-4">
-                            <div class="flex justify-between text-xs text-slate-500 mb-1">
-                                <span>Asistencia</span>
-                                <span class="font-bold {% if porcentaje_asistencia >= 85 %}text-emerald-600{% elif porcentaje_asistencia >= 70 %}text-amber-600{% else %}text-red-600{% endif %}">{{ porcentaje_asistencia }}%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5">
-                                <div class="h-2.5 rounded-full {% if porcentaje_asistencia >= 85 %}bg-emerald-500{% elif porcentaje_asistencia >= 70 %}bg-amber-500{% else %}bg-red-500{% endif %}"
-                                     style="width: {{ porcentaje_asistencia }}%"></div>
-                            </div>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Asistencia por Curso</h3>
+                    {% if asistencia_por_curso %}
+                        {% if total_asistencias > 0 %}
+                        <div class="flex justify-between text-xs text-slate-500 mb-1">
+                            <span class="font-semibold">Total global</span>
+                            <span class="font-bold {% if porcentaje_asistencia >= 85 %}text-emerald-600{% elif porcentaje_asistencia >= 70 %}text-amber-600{% else %}text-red-600{% endif %}">{{ porcentaje_asistencia }}%</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-center">
-                            <div class="bg-emerald-50 rounded-xl p-3">
-                                <p class="text-xl font-extrabold text-emerald-600">{{ presentes }}</p>
-                                <p class="text-xs text-slate-500">Presente</p>
-                            </div>
-                            <div class="bg-red-50 rounded-xl p-3">
-                                <p class="text-xl font-extrabold text-red-500">{{ ausentes }}</p>
-                                <p class="text-xs text-slate-500">Ausente</p>
-                            </div>
-                            <div class="bg-amber-50 rounded-xl p-3">
-                                <p class="text-xl font-extrabold text-amber-500">{{ justificados }}</p>
-                                <p class="text-xs text-slate-500">Justif.</p>
-                            </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 mb-4">
+                            <div class="h-2 rounded-full {% if porcentaje_asistencia >= 85 %}bg-emerald-500{% elif porcentaje_asistencia >= 70 %}bg-amber-500{% else %}bg-red-500{% endif %}"
+                                 style="width: {{ porcentaje_asistencia }}%"></div>
                         </div>
-                        <p class="text-xs text-slate-400 text-center mt-3">{{ total_asistencias }} registro{{ total_asistencias|pluralize }} en total</p>
+                        {% endif %}
+                        <div class="space-y-3">
+                        {% for item in asistencia_por_curso %}
+                            <div class="border border-slate-100 rounded-xl p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-slate-700 truncate">{{ item.curso.nombre }}</span>
+                                    <span class="text-xs font-bold ml-2 flex-shrink-0
+                                        {% if item.porcentaje is not None %}
+                                            {% if item.porcentaje >= 85 %}text-emerald-600{% elif item.porcentaje >= 70 %}text-amber-600{% else %}text-red-600{% endif %}
+                                        {% else %}text-slate-400{% endif %}">
+                                        {% if item.porcentaje is not None %}{{ item.porcentaje }}%{% else %}S/D{% endif %}
+                                    </span>
+                                </div>
+                                {% if item.total > 0 %}
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-2">
+                                    <div class="h-1.5 rounded-full {% if item.porcentaje >= 85 %}bg-emerald-500{% elif item.porcentaje >= 70 %}bg-amber-400{% else %}bg-red-400{% endif %}"
+                                         style="width: {{ item.porcentaje }}%"></div>
+                                </div>
+                                <div class="flex gap-3 text-xs text-slate-500">
+                                    <span class="text-emerald-600 font-semibold">P: {{ item.presentes }}</span>
+                                    <span class="text-red-500 font-semibold">A: {{ item.ausentes }}</span>
+                                    <span class="text-amber-600 font-semibold">J: {{ item.justificados }}</span>
+                                    <span class="text-slate-400">/ {{ item.total }} clases</span>
+                                </div>
+                                {% else %}
+                                <p class="text-xs text-slate-400 italic">Sin registros</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        </div>
                     {% else %}
                         <p class="text-slate-400 text-sm italic">Sin registros de asistencia.</p>
                     {% endif %}

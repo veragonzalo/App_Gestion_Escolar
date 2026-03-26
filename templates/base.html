@@ -158,6 +158,15 @@
                 </div>
             </div>
 
+            <!-- Buscador global -->
+            <form action="{% url 'buscar_global' %}" method="get" class="hidden md:flex items-center flex-grow max-w-xs">
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-lg pointer-events-none">search</span>
+                    <input type="text" name="q" placeholder="Buscar..."
+                           class="w-full pl-10 pr-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:bg-white/20 focus:border-white/40 transition-all">
+                </div>
+            </form>
+
             <!-- Derecha: notificaciones + usuario + logout -->
             <div class="flex items-center gap-3 ml-auto">
 

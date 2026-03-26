@@ -69,7 +69,14 @@
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h2 class="font-bold text-slate-800">{{ curso_seleccionado.nombre }}</h2>
-        <span class="text-xs text-slate-400">{{ filas|length }} alumno{{ filas|length|pluralize }}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-slate-400">{{ filas|length }} alumno{{ filas|length|pluralize }}</span>
+          <a href="{% url 'exportar_boletin_csv' %}?curso={{ curso_codigo }}"
+             class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-sm">download</span>
+            Exportar CSV
+          </a>
+        </div>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">

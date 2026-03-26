@@ -87,21 +87,35 @@ def perfil_alumno(request, alumno_rut):
             'promedio': round(float(promedio), 1) if promedio else None,
         })
 
-    asistencias = Asistencia.objects.filter(alumno=alumno)
-    total_asistencias = asistencias.count()
-    presentes = asistencias.filter(estado='P').count()
-    ausentes = asistencias.filter(estado='A').count()
-    justificados = asistencias.filter(estado='J').count()
-    porcentaje = round((presentes / total_asistencias) * 100) if total_asistencias > 0 else 0
+    asistencia_por_curso = []
+    total_asistencias = 0
+    total_presentes = 0
+    for curso in alumno.cursos.all():
+        qs = Asistencia.objects.filter(alumno=alumno, curso=curso)
+        total = qs.count()
+        presentes = qs.filter(estado='P').count()
+        ausentes = qs.filter(estado='A').count()
+        justificados = qs.filter(estado='J').count()
+        porcentaje = round((presentes / total) * 100) if total > 0 else None
+        asistencia_por_curso.append({
+            'curso': curso,
+            'total': total,
+            'presentes': presentes,
+            'ausentes': ausentes,
+            'justificados': justificados,
+            'porcentaje': porcentaje,
+        })
+        total_asistencias += total
+        total_presentes += presentes
+
+    porcentaje_global = round((total_presentes / total_asistencias) * 100) if total_asistencias > 0 else 0
 
     return render(request, 'alumnos/perfil_alumno.html', {
         'alumno': alumno,
         'notas_por_curso': notas_por_curso,
+        'asistencia_por_curso': asistencia_por_curso,
         'total_asistencias': total_asistencias,
-        'presentes': presentes,
-        'ausentes': ausentes,
-        'justificados': justificados,
-        'porcentaje_asistencia': porcentaje,
+        'porcentaje_asistencia': porcentaje_global,
         'apoderados': alumno.apoderados.all(),
     })
 

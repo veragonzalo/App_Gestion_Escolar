@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block titulo %}Matricular Alumnos - {{ curso.nombre }}{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+        <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a><span>›</span>
+        <a href="{% url 'inicio_cursos' %}" class="hover:text-[#002147]">Cursos</a><span>›</span>
+        <a href="{% url 'detalle_curso' curso.codigo %}" class="hover:text-[#002147]">{{ curso.nombre }}</a><span>›</span>
+        <span class="text-slate-700 font-medium">Matricular Alumnos</span>
+      </div>
+      <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Matricular Alumnos</h1>
+      <p class="text-sm text-slate-500 mt-1">Curso: <strong>{{ curso.nombre }}</strong></p>
+    </div>
+  </section>
+
+  <main class="flex-grow w-full max-w-5xl mx-auto p-8">
+
+    <!-- Buscador -->
+    <form method="get" class="flex gap-3 mb-6">
+      <div class="relative flex-grow">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input type="text" name="q" value="{{ q }}" placeholder="Buscar alumno por nombre, apellido o RUT..."
+               class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147]">
+      </div>
+      <button type="submit" class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors">Buscar</button>
+      {% if q %}<a href="{% url 'matricular_alumnos' curso.codigo %}" class="flex items-center gap-1 border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-50">
+        <span class="material-symbols-outlined text-lg">close</span>Limpiar
+      </a>{% endif %}
+    </form>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+          <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">
+            Selecciona los alumnos a matricular
+          </h2>
+          <div class="flex gap-2">
+            <button type="button" onclick="seleccionarTodos()" class="text-xs text-[#002147] hover:underline font-semibold">Seleccionar todos</button>
+            <span class="text-slate-300">|</span>
+            <button type="button" onclick="deseleccionarTodos()" class="text-xs text-slate-500 hover:underline font-semibold">Deseleccionar todos</button>
+          </div>
+        </div>
+
+        {% if todos_alumnos %}
+        <div class="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+          {% for alumno in todos_alumnos %}
+          <label class="flex items-center gap-4 px-6 py-3.5 hover:bg-slate-50 cursor-pointer transition-colors group">
+            <input type="checkbox" name="alumnos" value="{{ alumno.rut }}"
+                   class="w-4 h-4 rounded border-slate-300 text-[#002147] focus:ring-[#002147]/30 cursor-pointer"
+                   {% if alumno.rut in inscritos_ids %}checked{% endif %}>
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#002147] to-[#003063] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+              {{ alumno.nombre|slice:":1" }}{{ alumno.apellido|slice:":1" }}
+            </div>
+            <div class="flex-grow">
+              <p class="font-semibold text-slate-800 text-sm group-hover:text-[#002147] transition-colors">{{ alumno.nombre }} {{ alumno.apellido }}</p>
+              <p class="text-xs text-slate-400 font-mono">{{ alumno.rut }}</p>
+            </div>
+            {% if alumno.rut in inscritos_ids %}
+            <span class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-2 py-0.5 rounded-full flex-shrink-0">Inscrito</span>
+            {% endif %}
+          </label>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-12 text-center">
+          <span class="material-symbols-outlined text-slate-300 text-4xl block mb-2">person_search</span>
+          <p class="text-slate-400 text-sm">No se encontraron alumnos{% if q %} para "{{ q }}"{% endif %}.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button type="submit"
+                class="flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white font-bold px-8 py-3 rounded-xl transition-colors shadow">
+          <span class="material-symbols-outlined">save</span>
+          Guardar Matrículas
+        </button>
+        <a href="{% url 'detalle_curso' curso.codigo %}"
+           class="flex items-center gap-2 border border-slate-200 text-slate-600 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors">
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+          Cancelar
+        </a>
+      </div>
+    </form>
+
+  </main>
+</div>
+
+<script>
+  function seleccionarTodos() {
+    document.querySelectorAll('input[name="alumnos"]').forEach(cb => cb.checked = true);
+  }
+  function deseleccionarTodos() {
+    document.querySelectorAll('input[name="alumnos"]').forEach(cb => cb.checked = false);
+  }
+</script>
+{% endblock %}

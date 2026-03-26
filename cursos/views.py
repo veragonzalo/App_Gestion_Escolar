@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Curso
 from .forms import CursoForm
+from alumnos.models import Alumno
 from usuarios.decorators import requiere_puede_editar
 
 
@@ -78,3 +79,29 @@ def eliminar_curso(request, codigo):
         curso.delete()
         return redirect('lista_cursos')
     return render(request, 'cursos/confirmar_eliminar.html', {'curso': curso})
+
+
+@login_required
+@requiere_puede_editar
+def matricular_alumnos(request, codigo):
+    curso = get_object_or_404(Curso, codigo=codigo)
+    q = request.GET.get('q', '').strip()
+    todos_alumnos = Alumno.objects.all().order_by('apellido', 'nombre')
+    if q:
+        todos_alumnos = todos_alumnos.filter(
+            Q(nombre__icontains=q) | Q(apellido__icontains=q) | Q(rut__icontains=q)
+        )
+    inscritos_ids = set(curso.alumnos.values_list('rut', flat=True))
+
+    if request.method == 'POST':
+        seleccionados = request.POST.getlist('alumnos')
+        curso.alumnos.set(seleccionados)
+        messages.success(request, f'{len(seleccionados)} alumno(s) matriculado(s) en {curso.nombre}.')
+        return redirect('detalle_curso', codigo=codigo)
+
+    return render(request, 'cursos/matricular.html', {
+        'curso': curso,
+        'todos_alumnos': todos_alumnos,
+        'inscritos_ids': inscritos_ids,
+        'q': q,
+    })

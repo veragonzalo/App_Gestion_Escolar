@@ -1,7 +1,9 @@
+import csv
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from datetime import date, datetime
 from .models import Asistencia
 from .forms import AsistenciaForm
@@ -197,3 +199,41 @@ def resumen_asistencia(request):
         'filas': filas,
         'totales': totales,
     })
+
+
+@login_required
+def exportar_resumen_csv(request):
+    curso_codigo = request.GET.get('curso', '')
+    fecha_inicio = request.GET.get('fecha_inicio', '')
+    fecha_fin = request.GET.get('fecha_fin', '')
+    if not curso_codigo:
+        return redirect('resumen_asistencia')
+    try:
+        curso = Curso.objects.get(codigo=curso_codigo)
+    except Curso.DoesNotExist:
+        return redirect('resumen_asistencia')
+
+    response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
+    nombre_archivo = curso.nombre.replace(' ', '_')
+    response['Content-Disposition'] = f'attachment; filename="asistencia_{nombre_archivo}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Alumno', 'RUT', 'Total Clases', 'Presentes', 'Ausentes', 'Justificados', '% Asistencia'])
+
+    for alumno in curso.alumnos.all().order_by('apellido', 'nombre'):
+        qs = Asistencia.objects.filter(alumno=alumno, curso=curso)
+        if fecha_inicio:
+            qs = qs.filter(fecha__gte=fecha_inicio)
+        if fecha_fin:
+            qs = qs.filter(fecha__lte=fecha_fin)
+        total = qs.count()
+        presentes = qs.filter(estado='P').count()
+        ausentes = qs.filter(estado='A').count()
+        justificados = qs.filter(estado='J').count()
+        porcentaje = f'{round((presentes / total) * 100)}%' if total > 0 else 'S/D'
+        writer.writerow([
+            f'{alumno.nombre} {alumno.apellido}', alumno.rut,
+            total, presentes, ausentes, justificados, porcentaje
+        ])
+
+    return response

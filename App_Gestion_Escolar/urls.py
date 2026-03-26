@@ -12,6 +12,7 @@ urlpatterns = [
 
     # Página principal
     path('', views.inicio, name="inicio"),
+    path('buscar/', views.buscar_global, name='buscar_global'),
 
     # Apps
     path("alumnos/", include("alumnos.urls")),

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block titulo %}Búsqueda: {{ q }} - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6">
+      <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Resultados de búsqueda</h1>
+      {% if q %}
+      <p class="text-sm text-slate-500 mt-1">
+        {% if total > 0 %}
+          <strong>{{ total }}</strong> resultado{{ total|pluralize }} para "<strong>{{ q }}</strong>"
+        {% else %}
+          Sin resultados para "<strong>{{ q }}</strong>"
+        {% endif %}
+      </p>
+      {% endif %}
+    </div>
+  </section>
+
+  <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+
+    <!-- Buscador grande -->
+    <form action="{% url 'buscar_global' %}" method="get" class="mb-8">
+      <div class="relative max-w-2xl">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+        <input type="text" name="q" value="{{ q }}" placeholder="Buscar alumnos, profesores, cursos..."
+               class="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147] shadow-sm"
+               autofocus>
+      </div>
+    </form>
+
+    {% if not q %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
+      <span class="material-symbols-outlined text-slate-300 text-5xl block mb-3">search</span>
+      <p class="text-slate-400 text-sm">Escribe al menos 2 caracteres para buscar.</p>
+    </div>
+
+    {% elif total == 0 %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-16 text-center">
+      <span class="material-symbols-outlined text-slate-300 text-5xl block mb-3">search_off</span>
+      <p class="text-slate-500 font-semibold">Sin resultados para "{{ q }}"</p>
+      <p class="text-slate-400 text-sm mt-1">Intenta con otro nombre, apellido o RUT.</p>
+    </div>
+
+    {% else %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Alumnos -->
+      <div class="space-y-3">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-500 text-lg">school</span>
+          Alumnos ({{ alumnos|length }})
+        </h2>
+        {% if alumnos %}
+          {% for a in alumnos %}
+          <a href="{% url 'perfil_alumno' a.rut %}"
+             class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-blue-200 transition-all group">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+              {{ a.nombre|slice:":1" }}{{ a.apellido|slice:":1" }}
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-slate-800 text-sm group-hover:text-blue-600 transition-colors truncate">{{ a.nombre }} {{ a.apellido }}</p>
+              <p class="text-xs text-slate-400 font-mono">{{ a.rut }}</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-300 group-hover:text-blue-400 transition-colors text-lg">chevron_right</span>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="bg-white rounded-2xl border border-dashed border-slate-200 p-6 text-center">
+            <p class="text-slate-400 text-sm">Sin resultados</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Profesores -->
+      <div class="space-y-3">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+          <span class="material-symbols-outlined text-indigo-500 text-lg">badge</span>
+          Profesores ({{ profesores|length }})
+        </h2>
+        {% if profesores %}
+          {% for p in profesores %}
+          <a href="{% url 'inicio_profesores' %}"
+             class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-indigo-200 transition-all group">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+              {{ p.nombre|slice:":1" }}{{ p.apellido|slice:":1" }}
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors truncate">{{ p.nombre }} {{ p.apellido }}</p>
+              <p class="text-xs text-slate-400 font-mono">{{ p.rut }}</p>
+              <p class="text-xs text-slate-400">{{ p.profesion }}</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-300 group-hover:text-indigo-400 transition-colors text-lg">chevron_right</span>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="bg-white rounded-2xl border border-dashed border-slate-200 p-6 text-center">
+            <p class="text-slate-400 text-sm">Sin resultados</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Cursos -->
+      <div class="space-y-3">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-500 text-lg">menu_book</span>
+          Cursos ({{ cursos|length }})
+        </h2>
+        {% if cursos %}
+          {% for c in cursos %}
+          <a href="{% url 'detalle_curso' c.codigo %}"
+             class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-emerald-200 transition-all group">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-white text-lg">menu_book</span>
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-slate-800 text-sm group-hover:text-emerald-600 transition-colors truncate">{{ c.nombre }}</p>
+              <p class="text-xs text-slate-400">{{ c.total_alumnos }} alumno{{ c.total_alumnos|pluralize }}</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-300 group-hover:text-emerald-400 transition-colors text-lg">chevron_right</span>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="bg-white rounded-2xl border border-dashed border-slate-200 p-6 text-center">
+            <p class="text-slate-400 text-sm">Sin resultados</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endif %}
+
+  </main>
+</div>
+{% endblock %}
