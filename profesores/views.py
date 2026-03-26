@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import models
 from .models import Profesor
 from .forms import ProfesorForm
 from usuarios.decorators import requiere_puede_editar
@@ -18,8 +19,16 @@ def portal_profesores(request):
 
 @login_required
 def lista_profesores(request):
+    q = request.GET.get('q', '').strip()
     profesores = Profesor.objects.all()
-    return render(request, 'profesores/lista_profesores.html', {"lista_profesores": profesores})
+    if q:
+        profesores = profesores.filter(
+            models.Q(nombre__icontains=q) |
+            models.Q(apellido__icontains=q) |
+            models.Q(rut__icontains=q) |
+            models.Q(profesion__icontains=q)
+        )
+    return render(request, 'profesores/lista_profesores.html', {"lista_profesores": profesores, "q": q})
 
 
 @login_required

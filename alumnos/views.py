@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import models
+from django.db.models import Avg
 from .models import Alumno
 from .forms import AlumnoForm
 from usuarios.decorators import requiere_puede_editar
+from notas.models import Nota
+from asistencia.models import Asistencia
 
 
 @login_required
@@ -18,8 +22,15 @@ def portal_alumnos(request):
 
 @login_required
 def lista_alumnos(request):
+    q = request.GET.get('q', '').strip()
     alumnos = Alumno.objects.all()
-    return render(request, 'alumnos/lista_alumnos.html', {"lista_alumnos": alumnos})
+    if q:
+        alumnos = alumnos.filter(
+            models.Q(nombre__icontains=q) |
+            models.Q(apellido__icontains=q) |
+            models.Q(rut__icontains=q)
+        )
+    return render(request, 'alumnos/lista_alumnos.html', {"lista_alumnos": alumnos, "q": q})
 
 
 @login_required
@@ -57,6 +68,39 @@ def editar_alumno(request, alumno_rut):
     else:
         form = AlumnoForm(instance=alumno)
     return render(request, 'alumnos/editar_alumno.html', {"form": form, "alumno": alumno})
+
+
+@login_required
+def perfil_alumno(request, alumno_rut):
+    alumno = get_object_or_404(Alumno, rut=alumno_rut)
+
+    notas_por_curso = []
+    for curso in alumno.cursos.all():
+        notas = Nota.objects.filter(alumno=alumno, curso=curso).order_by('-fecha')
+        promedio = notas.aggregate(Avg('nota'))['nota__avg']
+        notas_por_curso.append({
+            'curso': curso,
+            'notas': notas,
+            'promedio': round(float(promedio), 1) if promedio else None,
+        })
+
+    asistencias = Asistencia.objects.filter(alumno=alumno)
+    total_asistencias = asistencias.count()
+    presentes = asistencias.filter(estado='P').count()
+    ausentes = asistencias.filter(estado='A').count()
+    justificados = asistencias.filter(estado='J').count()
+    porcentaje = round((presentes / total_asistencias) * 100) if total_asistencias > 0 else 0
+
+    return render(request, 'alumnos/perfil_alumno.html', {
+        'alumno': alumno,
+        'notas_por_curso': notas_por_curso,
+        'total_asistencias': total_asistencias,
+        'presentes': presentes,
+        'ausentes': ausentes,
+        'justificados': justificados,
+        'porcentaje_asistencia': porcentaje,
+        'apoderados': alumno.apoderados.all(),
+    })
 
 
 @login_required

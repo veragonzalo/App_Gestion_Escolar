@@ -63,6 +63,24 @@
 
             <!-- Contenido -->
             <div class="p-8">
+
+                <!-- Buscador -->
+                <form method="get" class="mb-6 flex items-center gap-3">
+                    <div class="relative flex-grow">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                        <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, apellido o RUT..."
+                               class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147]">
+                    </div>
+                    <button type="submit" class="bg-[#002147] hover:bg-[#003063] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+                        Buscar
+                    </button>
+                    {% if q %}
+                    <a href="{% url 'lista_alumnos' %}" class="border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+                        Limpiar
+                    </a>
+                    {% endif %}
+                </form>
+
                 {% if lista_alumnos %}
                     <!-- Estadísticas -->
                     <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -151,6 +169,11 @@
 
                                     <td class="py-4 px-4">
                                             <div class="flex items-center justify-center gap-2">
+                                                <!-- Botón Perfil -->
+                                                <a href="{% url 'perfil_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-[#002147] hover:bg-[#003063] text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Ver perfil">
+                                                    <span class="material-symbols-outlined text-sm">person</span>
+                                                    <span class="hidden sm:inline">Perfil</span>
+                                                </a>
                                                 <!-- Botón Ver -->
                                                 <a href="{% url 'detalle_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Ver detalle">
                                                     <span class="material-symbols-outlined text-sm">visibility</span>

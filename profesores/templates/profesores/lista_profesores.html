@@ -66,6 +66,23 @@
 
 <div class="p-8">
 
+<!-- Buscador -->
+<form method="get" class="mb-6 flex items-center gap-3">
+    <div class="relative flex-grow">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, apellido, RUT o profesión..."
+               class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147]">
+    </div>
+    <button type="submit" class="bg-[#002147] hover:bg-[#003063] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+        Buscar
+    </button>
+    {% if q %}
+    <a href="{% url 'lista_profesores' %}" class="border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+        Limpiar
+    </a>
+    {% endif %}
+</form>
+
 {% if lista_profesores %}
 
 <!-- Estadísticas -->

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Perfil de {{ alumno.nombre }} {{ alumno.apellido }} - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                    <span>›</span>
+                    <a href="{% url 'inicio_alumnos' %}" class="hover:text-[#002147]">Alumnos</a>
+                    <span>›</span>
+                    <a href="{% url 'lista_alumnos' %}" class="hover:text-[#002147]">Listado</a>
+                    <span>›</span>
+                    <span class="text-slate-700 font-medium">{{ alumno.nombre }} {{ alumno.apellido }}</span>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Perfil del Alumno</h1>
+            </div>
+            {% if perfil.puede_editar or user.is_superuser %}
+            <div class="flex gap-3">
+                <a href="{% url 'editar_alumno' alumno.rut %}"
+                   class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                    Editar
+                </a>
+                <a href="{% url 'eliminar_alumno' alumno.rut %}"
+                   class="flex items-center gap-2 border border-red-300 text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-600 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">delete</span>
+                    Eliminar
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Columna izquierda: datos personales + apoderados -->
+            <div class="space-y-5">
+
+                <!-- Tarjeta alumno -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="bg-gradient-to-br from-[#002147] to-[#003063] p-6 flex flex-col items-center text-center">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-white text-4xl">person</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">{{ alumno.nombre }} {{ alumno.apellido }}</h2>
+                        <p class="text-white/70 text-sm mt-1 font-mono">{{ alumno.rut }}</p>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div>
+                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Fecha de nacimiento</p>
+                            <p class="font-semibold text-slate-800">{{ alumno.fecha_nacimiento|date:"d/m/Y" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Cursos inscritos</p>
+                            {% if alumno.cursos.all %}
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    {% for curso in alumno.cursos.all %}
+                                    <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-md">{{ curso.nombre }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-slate-400 text-sm italic">Sin cursos asignados</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apoderados -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Apoderados</h3>
+                    {% if apoderados %}
+                        <div class="space-y-3">
+                            {% for ap in apoderados %}
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="material-symbols-outlined text-amber-600 text-lg">family_restroom</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-800 text-sm">{{ ap.nombre }} {{ ap.apellido }}</p>
+                                    <p class="text-xs text-slate-500">{{ ap.telefono }}</p>
+                                    <p class="text-xs text-slate-500">{{ ap.email }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-slate-400 text-sm italic">Sin apoderados registrados.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Asistencia -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Resumen de Asistencia</h3>
+                    {% if total_asistencias > 0 %}
+                        <!-- Barra de progreso -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>Asistencia</span>
+                                <span class="font-bold {% if porcentaje_asistencia >= 85 %}text-emerald-600{% elif porcentaje_asistencia >= 70 %}text-amber-600{% else %}text-red-600{% endif %}">{{ porcentaje_asistencia }}%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5">
+                                <div class="h-2.5 rounded-full {% if porcentaje_asistencia >= 85 %}bg-emerald-500{% elif porcentaje_asistencia >= 70 %}bg-amber-500{% else %}bg-red-500{% endif %}"
+                                     style="width: {{ porcentaje_asistencia }}%"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-emerald-50 rounded-xl p-3">
+                                <p class="text-xl font-extrabold text-emerald-600">{{ presentes }}</p>
+                                <p class="text-xs text-slate-500">Presente</p>
+                            </div>
+                            <div class="bg-red-50 rounded-xl p-3">
+                                <p class="text-xl font-extrabold text-red-500">{{ ausentes }}</p>
+                                <p class="text-xs text-slate-500">Ausente</p>
+                            </div>
+                            <div class="bg-amber-50 rounded-xl p-3">
+                                <p class="text-xl font-extrabold text-amber-500">{{ justificados }}</p>
+                                <p class="text-xs text-slate-500">Justif.</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 text-center mt-3">{{ total_asistencias }} registro{{ total_asistencias|pluralize }} en total</p>
+                    {% else %}
+                        <p class="text-slate-400 text-sm italic">Sin registros de asistencia.</p>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'lista_alumnos' %}"
+                   class="flex items-center justify-center gap-2 w-full border border-slate-200 text-slate-600 py-3 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    Volver al listado
+                </a>
+            </div>
+
+            <!-- Columna derecha: notas por curso -->
+            <div class="lg:col-span-2 space-y-5">
+                <h2 class="text-lg font-bold text-slate-800">Notas por Curso</h2>
+
+                {% if notas_por_curso %}
+                    {% for item in notas_por_curso %}
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <!-- Encabezado curso -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 bg-[#002147] rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-lg">menu_book</span>
+                                </div>
+                                <span class="font-bold text-slate-800">{{ item.curso.nombre }}</span>
+                            </div>
+                            {% if item.promedio %}
+                            <div class="text-right">
+                                <p class="text-xs text-slate-400">Promedio</p>
+                                <p class="text-2xl font-extrabold {% if item.promedio >= 4.0 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ item.promedio }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Tabla de notas -->
+                        {% if item.notas %}
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-100">
+                                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th>
+                                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Tipo</th>
+                                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Descripción</th>
+                                        <th class="text-right py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for nota in item.notas %}
+                                    <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                                        <td class="py-3 px-4 text-slate-600">{{ nota.fecha|date:"d/m/Y" }}</td>
+                                        <td class="py-3 px-4">
+                                            <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">{{ nota.get_tipo_evaluacion_display }}</span>
+                                        </td>
+                                        <td class="py-3 px-4 text-slate-500 text-xs">{{ nota.descripcion|default:"—" }}</td>
+                                        <td class="py-3 px-4 text-right">
+                                            <span class="text-base font-extrabold {% if nota.nota >= 4.0 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ nota.nota }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="p-5 text-sm text-slate-400 italic">Sin notas registradas para este curso.</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-16 text-center">
+                        <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-slate-400 text-2xl">grade</span>
+                        </div>
+                        <p class="text-slate-500 text-sm">Este alumno no tiene notas registradas.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </main>
+</div>
+{% endblock %}
