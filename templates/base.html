@@ -5,10 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}Inicio - APP Gestion Liceo Digital{% endblock %}</title>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002147",
+                        "page-bg": "#f8f9fa",
+                        "border-color": "#e2e8f0"
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script src="{% static 'js/scripts.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 
@@ -376,5 +392,20 @@
         </div>
     </footer>
 
+
+<script>
+    function toggleModulos() {
+        const dropdown = document.getElementById('modulos-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+        const btn = document.getElementById('modulos-btn');
+        const dropdown = document.getElementById('modulos-dropdown');
+        if (btn && dropdown && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
 </body>
 </html>
