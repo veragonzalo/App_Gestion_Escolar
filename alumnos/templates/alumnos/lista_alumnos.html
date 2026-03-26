@@ -98,25 +98,25 @@
                         <table class="w-full">
                             <thead>
                                 <tr class="border-b-2 border-slate-200">
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">badge</span>
                                             <span>RUT</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">person</span>
                                             <span>Nombre Completo</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">calendar_today</span>
                                             <span>Fecha Nacimiento</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">menu_book</span>
                                             <span>Cursos Inscritos</span>
@@ -127,32 +127,32 @@
                             <tbody>
                                 {% for alumno in lista_alumnos %}
                                     <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             <div class="flex items-center gap-2">
-                                                <div class="w-10 h-10 bg-[#002147] text-white rounded-lg flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-lg">badge</span>
+                                                <div class="w-8 h-8 bg-[#002147] text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <span class="material-symbols-outlined text-sm">badge</span>
                                                 </div>
                                                 <span class="font-mono text-sm font-bold text-slate-700">{{ alumno.rut }}</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-blue-600 text-xl">person</span>
+                                        <td class="py-3 px-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <span class="material-symbols-outlined text-blue-600 text-lg">person</span>
                                                 </div>
                                                 <div>
-                                                    <p class="font-bold text-slate-900 text-lg">{{ alumno.nombre }} {{ alumno.apellido }}</p>
-                                                    <p class="text-slate-500 text-xs">Alumno activo</p>
+                                                    <p class="font-semibold text-slate-900">{{ alumno.nombre }} {{ alumno.apellido }}</p>
+                                                    <p class="text-slate-400 text-xs">Alumno activo</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-lg">cake</span>
+                                                <span class="material-symbols-outlined text-slate-400 text-base">cake</span>
                                                 <span class="text-slate-700 text-sm">{{ alumno.fecha_nacimiento|date:"d/m/Y" }}</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             {% if alumno.cursos.all %}
                                                 <div class="flex flex-wrap gap-1">
                                                     {% for curso in alumno.cursos.all %}
@@ -167,30 +167,24 @@
                                             {% endif %}
                                         </td>
 
-                                    <td class="py-4 px-4">
-                                            <div class="flex items-center justify-center gap-2">
+                                    <td class="py-4 px-3">
+                                            <div class="flex items-center justify-center gap-1.5">
                                                 <!-- Botón Perfil -->
-                                                <a href="{% url 'perfil_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-[#002147] hover:bg-[#003063] text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Ver perfil">
-                                                    <span class="material-symbols-outlined text-sm">person</span>
-                                                    <span class="hidden sm:inline">Perfil</span>
+                                                <a href="{% url 'perfil_alumno' alumno.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-[#002147] hover:bg-[#003063] text-white rounded-lg transition-all" title="Ver perfil">
+                                                    <span class="material-symbols-outlined text-[18px]">person</span>
                                                 </a>
                                                 <!-- Botón Ver -->
-                                                <a href="{% url 'detalle_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Ver detalle">
-                                                    <span class="material-symbols-outlined text-sm">visibility</span>
-                                                    <span class="hidden sm:inline">Ver</span>
+                                                <a href="{% url 'detalle_alumno' alumno.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all" title="Ver detalle">
+                                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
                                                 </a>
-
                                                 {% if perfil.puede_editar or user.is_superuser %}
                                                 <!-- Botón Editar -->
-                                                <a href="{% url 'editar_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Editar">
-                                                    <span class="material-symbols-outlined text-sm">edit</span>
-                                                    <span class="hidden sm:inline">Editar</span>
+                                                <a href="{% url 'editar_alumno' alumno.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all" title="Editar">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
                                                 </a>
-
                                                 <!-- Botón Eliminar -->
-                                                <a href="{% url 'eliminar_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Eliminar">
-                                                    <span class="material-symbols-outlined text-sm">delete</span>
-                                                    <span class="hidden sm:inline">Eliminar</span>
+                                                <a href="{% url 'eliminar_alumno' alumno.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all" title="Eliminar">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
                                                 </a>
                                                 {% endif %}
                                             </div>
