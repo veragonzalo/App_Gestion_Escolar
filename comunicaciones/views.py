@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Comunicado
 from .forms import ComunicadoForm
+from usuarios.decorators import requiere_puede_editar
 
 
 @login_required
@@ -29,6 +30,13 @@ def lista_comunicados(request):
 
 
 @login_required
+def detalle_comunicado(request, pk):
+    comunicado = get_object_or_404(Comunicado, pk=pk)
+    return render(request, 'comunicaciones/detalle.html', {'comunicado': comunicado})
+
+
+@login_required
+@requiere_puede_editar
 def crear_comunicado(request):
     form = ComunicadoForm(request.POST or None)
     if form.is_valid():
@@ -40,12 +48,7 @@ def crear_comunicado(request):
 
 
 @login_required
-def detalle_comunicado(request, pk):
-    comunicado = get_object_or_404(Comunicado, pk=pk)
-    return render(request, 'comunicaciones/detalle.html', {'comunicado': comunicado})
-
-
-@login_required
+@requiere_puede_editar
 def editar_comunicado(request, pk):
     comunicado = get_object_or_404(Comunicado, pk=pk)
     form = ComunicadoForm(request.POST or None, instance=comunicado)
@@ -56,6 +59,7 @@ def editar_comunicado(request, pk):
 
 
 @login_required
+@requiere_puede_editar
 def eliminar_comunicado(request, pk):
     comunicado = get_object_or_404(Comunicado, pk=pk)
     if request.method == 'POST':

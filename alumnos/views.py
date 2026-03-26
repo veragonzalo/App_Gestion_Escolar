@@ -3,131 +3,69 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Alumno
 from .forms import AlumnoForm
+from usuarios.decorators import requiere_puede_editar
 
 
 @login_required
 def portal_alumnos(request):
-
-    total_alumnos = Alumno.objects.count()
-
     contexto = {
-        'total_alumnos': total_alumnos,
+        'total_alumnos': Alumno.objects.count(),
         'nuevos_este_mes': 0,
         'cursos_activos': 0,
     }
-
     return render(request, 'alumnos/inicio.html', contexto)
 
 
 @login_required
 def lista_alumnos(request):
-
     alumnos = Alumno.objects.all()
-
-    contexto = {
-        "lista_alumnos": alumnos
-    }
-
-    return render(request, 'alumnos/lista_alumnos.html', contexto)
-
-
-@login_required
-def nuevo_alumno(request):
-
-    if request.method == "POST":
-
-        form = AlumnoForm(request.POST)
-
-        if form.is_valid():
-
-            alumno = form.save()
-
-            messages.success(
-                request,
-                f'¡Alumno {alumno.nombre} {alumno.apellido} registrado exitosamente!'
-            )
-
-            return redirect('lista_alumnos')
-
-        else:
-
-            messages.error(request, 'Por favor corrija los errores del formulario.')
-
-    else:
-
-        form = AlumnoForm()
-
-    contexto = {
-        "form": form
-    }
-
-    return render(request, 'alumnos/registro_alumno.html', contexto)
+    return render(request, 'alumnos/lista_alumnos.html', {"lista_alumnos": alumnos})
 
 
 @login_required
 def detalle_alumno(request, alumno_rut):
-
     alumno = get_object_or_404(Alumno, rut=alumno_rut)
-
-    contexto = {
-        "alumno": alumno
-    }
-
-    return render(request, 'alumnos/detalle_alumno.html', contexto)
+    return render(request, 'alumnos/detalle_alumno.html', {"alumno": alumno})
 
 
 @login_required
-def editar_alumno(request, alumno_rut):
-
-    alumno = get_object_or_404(Alumno, rut=alumno_rut)
-
+@requiere_puede_editar
+def nuevo_alumno(request):
     if request.method == "POST":
-
-        form = AlumnoForm(request.POST, instance=alumno)
-
+        form = AlumnoForm(request.POST)
         if form.is_valid():
-
-            form.save()
-
-            messages.success(
-                request,
-                f'¡Alumno {alumno.nombre} {alumno.apellido} actualizado exitosamente!'
-            )
-
+            alumno = form.save()
+            messages.success(request, f'Alumno {alumno.nombre} {alumno.apellido} registrado exitosamente.')
             return redirect('lista_alumnos')
-
+        else:
+            messages.error(request, 'Por favor corrija los errores del formulario.')
     else:
-
-        form = AlumnoForm(instance=alumno)
-
-    contexto = {
-        "form": form,
-        "alumno": alumno
-    }
-
-    return render(request, 'alumnos/editar_alumno.html', contexto)
+        form = AlumnoForm()
+    return render(request, 'alumnos/registro_alumno.html', {"form": form})
 
 
 @login_required
-def eliminar_alumno(request, alumno_rut):
-
+@requiere_puede_editar
+def editar_alumno(request, alumno_rut):
     alumno = get_object_or_404(Alumno, rut=alumno_rut)
-
     if request.method == "POST":
+        form = AlumnoForm(request.POST, instance=alumno)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Alumno {alumno.nombre} {alumno.apellido} actualizado exitosamente.')
+            return redirect('lista_alumnos')
+    else:
+        form = AlumnoForm(instance=alumno)
+    return render(request, 'alumnos/editar_alumno.html', {"form": form, "alumno": alumno})
 
+
+@login_required
+@requiere_puede_editar
+def eliminar_alumno(request, alumno_rut):
+    alumno = get_object_or_404(Alumno, rut=alumno_rut)
+    if request.method == "POST":
         nombre_completo = f"{alumno.nombre} {alumno.apellido}"
-
         alumno.delete()
-
-        messages.success(
-            request,
-            f'Alumno {nombre_completo} eliminado exitosamente.'
-        )
-
+        messages.success(request, f'Alumno {nombre_completo} eliminado exitosamente.')
         return redirect('lista_alumnos')
-
-    contexto = {
-        "alumno": alumno
-    }
-
-    return render(request, 'alumnos/confirmar_eliminar.html', contexto)
+    return render(request, 'alumnos/confirmar_eliminar.html', {"alumno": alumno})
