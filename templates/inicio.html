@@ -4,185 +4,264 @@
 {% block contenido %}
 <div class="flex-grow flex flex-col">
 
-  <!-- Header -->
-  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
-      <div>
-        <p class="text-sm text-slate-500 mb-0.5">Bienvenido de vuelta,</p>
-        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ user.get_full_name|default:user.username }}</h1>
-        <p class="text-sm text-slate-400 mt-1">
-          {% if perfil %}{{ perfil.get_rol_display }}{% endif %}
-          · Sistema de Gestión Escolar
-        </p>
+  <!-- HERO BANNER -->
+  <section class="relative overflow-hidden">
+    <div class="relative h-[280px]">
+      <img
+        src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1400&h=280&fit=crop"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-[#002147]/95 via-[#002147]/80 to-[#003063]/60"></div>
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+
+      <div class="relative z-10 h-full max-w-7xl mx-auto px-8 flex items-center justify-between gap-6">
+        <!-- Saludo -->
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full mb-4 border border-white/20">
+            <span class="material-symbols-outlined text-white text-base" style="font-variation-settings:'FILL' 1">workspace_premium</span>
+            <span class="text-white/90 text-xs font-semibold">Sistema Educativo</span>
+          </div>
+          <p class="text-white/70 text-sm mb-1">Bienvenido de vuelta,</p>
+          <h1 class="text-white text-4xl font-extrabold tracking-tight leading-tight mb-2">
+            {{ user.get_full_name|default:user.username }}
+          </h1>
+          <p class="text-white/60 text-sm">
+            {% if perfil %}{{ perfil.get_rol_display }} · {% endif %}Gestión Liceo Digital
+          </p>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="flex flex-col gap-3 flex-shrink-0">
+          {% if perfil.puede_editar or user.is_superuser %}
+          <a href="{% url 'registrar_alumno' %}" class="flex items-center gap-2 bg-white text-[#002147] px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-100 transition-all shadow-lg">
+            <span class="material-symbols-outlined text-lg">person_add</span>Nuevo Alumno
+          </a>
+          {% endif %}
+          {% if perfil.puede_editar_academico or perfil.puede_editar or user.is_superuser %}
+          <a href="{% url 'registrar_asistencia' %}" class="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white/25 transition-all">
+            <span class="material-symbols-outlined text-lg">add_task</span>Registrar Asistencia
+          </a>
+          {% endif %}
+          {% if perfil.puede_editar_academico or perfil.puede_editar or user.is_superuser %}
+          <a href="{% url 'registrar_nota' %}" class="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white/25 transition-all">
+            <span class="material-symbols-outlined text-lg">edit_note</span>Registrar Nota
+          </a>
+          {% endif %}
+        </div>
       </div>
-      <div class="flex gap-3 flex-wrap">
-        {% if perfil.puede_editar or user.is_superuser %}
-        <a href="{% url 'registrar_alumno' %}" class="flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow">
-          <span class="material-symbols-outlined text-lg">person_add</span>Nuevo Alumno
-        </a>
-        {% endif %}
-        {% if perfil.puede_editar_academico or perfil.puede_editar or user.is_superuser %}
-        <a href="{% url 'registrar_asistencia' %}" class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
-          <span class="material-symbols-outlined text-lg">add_task</span>Registrar Asistencia
-        </a>
-        {% endif %}
-      </div>
+
+      <!-- Destellos decorativos -->
+      <div class="absolute top-8 right-48 w-40 h-40 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-4 right-20 w-24 h-24 bg-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
     </div>
   </section>
 
-  <main class="flex-grow w-full max-w-7xl mx-auto p-8 space-y-8">
+  <main class="flex-grow w-full max-w-7xl mx-auto px-8 py-8 space-y-8">
 
-    <!-- Stats -->
-    <section>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <!-- STATS con gradientes -->
+    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 
-        <a href="{% url 'lista_alumnos' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-blue-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200 transition-colors">
-            <span class="material-symbols-outlined text-blue-600 text-xl">school</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_alumnos }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Alumnos</p>
-        </a>
+      <a href="{% url 'lista_alumnos' %}" class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">school</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_alumnos }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Alumnos</p>
+      </a>
 
-        <a href="{% url 'lista_profesores' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-indigo-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-indigo-200 transition-colors">
-            <span class="material-symbols-outlined text-indigo-600 text-xl">badge</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_profesores }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Profesores</p>
-        </a>
+      <a href="{% url 'lista_profesores' %}" class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">badge</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_profesores }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Profesores</p>
+      </a>
 
-        <a href="{% url 'lista_cursos' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-emerald-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-emerald-200 transition-colors">
-            <span class="material-symbols-outlined text-emerald-600 text-xl">menu_book</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_cursos }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Cursos</p>
-        </a>
+      <a href="{% url 'lista_cursos' %}" class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">menu_book</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_cursos }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Cursos</p>
+      </a>
 
-        <a href="{% url 'lista_asistencia' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-teal-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-teal-200 transition-colors">
-            <span class="material-symbols-outlined text-teal-600 text-xl">fact_check</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_asistencias }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Asistencias</p>
-        </a>
+      <a href="{% url 'lista_asistencia' %}" class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl p-5 text-white shadow-lg shadow-teal-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">fact_check</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_asistencias }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Asistencias</p>
+      </a>
 
-        <a href="{% url 'lista_notas' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-purple-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-200 transition-colors">
-            <span class="material-symbols-outlined text-purple-600 text-xl">grade</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_notas }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Notas</p>
-        </a>
+      <a href="{% url 'lista_notas' %}" class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg shadow-purple-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">grade</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_notas }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Notas</p>
+      </a>
 
-        <a href="{% url 'lista_apoderados' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-amber-300 hover:shadow-md transition-all group">
-          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-amber-200 transition-colors">
-            <span class="material-symbols-outlined text-amber-600 text-xl">family_restroom</span>
-          </div>
-          <p class="text-2xl font-extrabold text-slate-900">{{ total_apoderados }}</p>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Apoderados</p>
-        </a>
+      <a href="{% url 'lista_apoderados' %}" class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="material-symbols-outlined text-3xl text-white/80" style="font-variation-settings:'FILL' 1">family_restroom</span>
+          <span class="material-symbols-outlined text-white/40 text-base group-hover:text-white/70 transition-colors">arrow_forward</span>
+        </div>
+        <p class="text-3xl font-extrabold">{{ total_apoderados }}</p>
+        <p class="text-xs text-white/70 font-semibold mt-1 uppercase tracking-wider">Apoderados</p>
+      </a>
 
-      </div>
     </section>
 
-    <!-- Módulos + Comunicados (dos columnas) -->
+    <!-- MÓDULOS + PANEL LATERAL -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
       <!-- Módulos (2/3) -->
-      <div class="lg:col-span-2">
-        <h2 class="text-lg font-bold text-slate-800 mb-4">Acceso rápido a módulos</h2>
+      <div class="lg:col-span-2 space-y-5">
+        <div class="flex items-center gap-3">
+          <div class="w-1 h-6 bg-[#002147] rounded-full"></div>
+          <h2 class="text-lg font-bold text-slate-800">Módulos del sistema</h2>
+        </div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
 
-          <a href="{% url 'inicio_alumnos' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">person_search</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-sm leading-tight">Alumnos</p>
+          <a href="{% url 'inicio_alumnos' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-blue-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-blue-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">person_search</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">Alumnos</p>
               <p class="text-xs text-slate-400 mt-0.5">Matrículas y perfiles</p>
+              <div class="flex items-center gap-1 mt-3 text-blue-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_profesores' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">badge</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-sm leading-tight">Profesores</p>
+          <a href="{% url 'inicio_profesores' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-indigo-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">badge</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">Profesores</p>
               <p class="text-xs text-slate-400 mt-0.5">Docentes y horarios</p>
+              <div class="flex items-center gap-1 mt-3 text-indigo-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_cursos' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">menu_book</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors text-sm leading-tight">Cursos</p>
+          <a href="{% url 'inicio_cursos' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-emerald-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-emerald-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">menu_book</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Cursos</p>
               <p class="text-xs text-slate-400 mt-0.5">Planificación curricular</p>
+              <div class="flex items-center gap-1 mt-3 text-emerald-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_asistencia' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">fact_check</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-teal-600 transition-colors text-sm leading-tight">Asistencia</p>
+          <a href="{% url 'inicio_asistencia' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-teal-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-teal-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-teal-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">fact_check</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Asistencia</p>
               <p class="text-xs text-slate-400 mt-0.5">Registro diario</p>
+              <div class="flex items-center gap-1 mt-3 text-teal-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_notas' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-purple-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md shadow-purple-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">grade</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-purple-600 transition-colors text-sm leading-tight">Notas</p>
+          <a href="{% url 'inicio_notas' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-purple-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-purple-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-purple-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">grade</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-purple-600 transition-colors">Notas</p>
               <p class="text-xs text-slate-400 mt-0.5">Calificaciones</p>
+              <div class="flex items-center gap-1 mt-3 text-purple-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_apoderados' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-amber-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">family_restroom</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-amber-600 transition-colors text-sm leading-tight">Apoderados</p>
+          <a href="{% url 'inicio_apoderados' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-amber-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-amber-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">family_restroom</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-amber-600 transition-colors">Apoderados</p>
               <p class="text-xs text-slate-400 mt-0.5">Vínculos familiares</p>
+              <div class="flex items-center gap-1 mt-3 text-amber-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_horarios' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-violet-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">calendar_month</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-violet-600 transition-colors text-sm leading-tight">Horarios</p>
+          <a href="{% url 'inicio_horarios' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-violet-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-violet-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-violet-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-violet-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">calendar_month</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-violet-600 transition-colors">Horarios</p>
               <p class="text-xs text-slate-400 mt-0.5">Plan semanal</p>
+              <div class="flex items-center gap-1 mt-3 text-violet-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
-          <a href="{% url 'inicio_comunicaciones' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-sky-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl flex items-center justify-center shadow-md shadow-sky-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">campaign</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-sky-600 transition-colors text-sm leading-tight">Comunicaciones</p>
+          <a href="{% url 'inicio_comunicaciones' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-sky-300 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-sky-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-sky-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-sky-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">campaign</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-sky-600 transition-colors">Comunicaciones</p>
               <p class="text-xs text-slate-400 mt-0.5">Circulares y avisos</p>
+              <div class="flex items-center gap-1 mt-3 text-sky-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
 
           {% if perfil.es_director or user.is_superuser %}
-          <a href="{% url 'lista_usuarios' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-400 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
-            <div class="w-11 h-11 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-md shadow-slate-500/30 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-white text-xl">manage_accounts</span>
-            </div>
-            <div>
-              <p class="font-bold text-slate-800 group-hover:text-slate-600 transition-colors text-sm leading-tight">Usuarios</p>
+          <a href="{% url 'lista_usuarios' %}" class="group relative bg-white rounded-2xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-xl shadow-sm transition-all overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-slate-50 rounded-full -translate-y-6 translate-x-6 group-hover:bg-slate-100 transition-colors"></div>
+            <div class="relative">
+              <div class="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-slate-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-2xl">manage_accounts</span>
+              </div>
+              <p class="font-bold text-slate-800 group-hover:text-slate-600 transition-colors">Usuarios</p>
               <p class="text-xs text-slate-400 mt-0.5">Cuentas y roles</p>
+              <div class="flex items-center gap-1 mt-3 text-slate-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Ir al módulo</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </div>
             </div>
           </a>
           {% endif %}
@@ -190,56 +269,82 @@
         </div>
       </div>
 
-      <!-- Panel derecho: comunicados + acciones rápidas (1/3) -->
-      <div class="space-y-6">
+      <!-- Panel derecho (1/3) -->
+      <div class="space-y-5">
 
-        <!-- Accesos directos de reportes -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Reportes rápidos</h3>
-          <div class="space-y-2">
-            <a href="{% url 'boletin_notas' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-purple-50 transition-colors group">
-              <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-purple-600 text-base">assignment</span>
+        <!-- Reportes rápidos -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-1 h-6 bg-[#002147] rounded-full"></div>
+            <h2 class="text-lg font-bold text-slate-800">Reportes</h2>
+          </div>
+          <div class="space-y-3">
+            <a href="{% url 'boletin_notas' %}" class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 p-4 hover:border-purple-300 hover:shadow-lg shadow-sm transition-all group">
+              <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-purple-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-lg">assignment</span>
               </div>
-              <span class="text-sm font-semibold text-slate-700 group-hover:text-purple-700">Boletín de Notas</span>
-              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-purple-400">arrow_forward</span>
+              <div class="flex-grow">
+                <p class="text-sm font-bold text-slate-800 group-hover:text-purple-600 transition-colors">Boletín de Notas</p>
+                <p class="text-xs text-slate-400">Promedios por curso</p>
+              </div>
+              <span class="material-symbols-outlined text-slate-300 group-hover:text-purple-400 transition-colors">chevron_right</span>
             </a>
-            <a href="{% url 'resumen_asistencia' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-teal-50 transition-colors group">
-              <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-teal-600 text-base">bar_chart</span>
+
+            <a href="{% url 'resumen_asistencia' %}" class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 p-4 hover:border-teal-300 hover:shadow-lg shadow-sm transition-all group">
+              <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-teal-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-lg">bar_chart</span>
               </div>
-              <span class="text-sm font-semibold text-slate-700 group-hover:text-teal-700">Resumen Asistencia</span>
-              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-teal-400">arrow_forward</span>
+              <div class="flex-grow">
+                <p class="text-sm font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Resumen Asistencia</p>
+                <p class="text-xs text-slate-400">% por alumno y curso</p>
+              </div>
+              <span class="material-symbols-outlined text-slate-300 group-hover:text-teal-400 transition-colors">chevron_right</span>
             </a>
-            <a href="{% url 'inicio_horarios' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-violet-50 transition-colors group">
-              <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-violet-600 text-base">calendar_view_week</span>
+
+            <a href="{% url 'inicio_horarios' %}" class="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 p-4 hover:border-violet-300 hover:shadow-lg shadow-sm transition-all group">
+              <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-violet-500/30 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white text-lg">calendar_view_week</span>
               </div>
-              <span class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Ver Horarios</span>
-              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-violet-400">arrow_forward</span>
+              <div class="flex-grow">
+                <p class="text-sm font-bold text-slate-800 group-hover:text-violet-600 transition-colors">Horarios</p>
+                <p class="text-xs text-slate-400">Vista semanal por curso</p>
+              </div>
+              <span class="material-symbols-outlined text-slate-300 group-hover:text-violet-400 transition-colors">chevron_right</span>
             </a>
           </div>
         </div>
 
         <!-- Comunicados recientes -->
         {% if comunicados_recientes %}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Comunicados activos</h3>
-            <a href="{% url 'lista_comunicados' %}" class="text-xs font-semibold text-[#002147] hover:underline">Ver todos</a>
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-1 h-6 bg-sky-500 rounded-full"></div>
+              <h2 class="text-lg font-bold text-slate-800">Comunicados</h2>
+            </div>
+            <a href="{% url 'lista_comunicados' %}" class="text-xs font-semibold text-[#002147] hover:underline flex items-center gap-0.5">
+              Ver todos <span class="material-symbols-outlined text-xs">arrow_forward</span>
+            </a>
           </div>
-          <div class="space-y-2">
+          <div class="space-y-3">
             {% for com in comunicados_recientes %}
-            <a href="{% url 'detalle_comunicado' com.pk %}" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+            <a href="{% url 'detalle_comunicado' com.pk %}" class="flex items-start gap-3 bg-white rounded-2xl border border-slate-200 p-4 hover:shadow-lg shadow-sm transition-all group
+                {% if com.tipo == 'UR' %}hover:border-red-200{% elif com.tipo == 'CI' %}hover:border-blue-200{% else %}hover:border-amber-200{% endif %}">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
                   {% if com.tipo == 'UR' %}bg-red-100{% elif com.tipo == 'CI' %}bg-blue-100{% else %}bg-amber-100{% endif %}">
-                <span class="material-symbols-outlined text-base
-                    {% if com.tipo == 'UR' %}text-red-600{% elif com.tipo == 'CI' %}text-blue-600{% else %}text-amber-600{% endif %}">
+                <span class="material-symbols-outlined text-lg
+                    {% if com.tipo == 'UR' %}text-red-600{% elif com.tipo == 'CI' %}text-blue-600{% else %}text-amber-600{% endif %}" style="font-variation-settings:'FILL' 1">
                   {{ com.icono_tipo }}
                 </span>
               </div>
               <div class="min-w-0 flex-grow">
-                <p class="text-sm font-semibold text-slate-800 group-hover:text-[#002147] truncate transition-colors">{{ com.titulo }}</p>
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full
+                      {% if com.tipo == 'UR' %}bg-red-100 text-red-700{% elif com.tipo == 'CI' %}bg-blue-100 text-blue-700{% else %}bg-amber-100 text-amber-700{% endif %}">
+                    {{ com.get_tipo_display }}
+                  </span>
+                </div>
+                <p class="text-sm font-semibold text-slate-800 truncate group-hover:text-[#002147] transition-colors">{{ com.titulo }}</p>
                 <p class="text-xs text-slate-400">{{ com.fecha_publicacion|date:"d/m/Y" }}</p>
               </div>
             </a>
