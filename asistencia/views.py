@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date, datetime
 from .models import Asistencia
 from cursos.models import Curso
+from alumnos.models import Alumno
 from usuarios.decorators import requiere_academico
 
 
@@ -139,3 +140,56 @@ def eliminar_asistencia(request, asistencia_id):
         messages.success(request, 'Registro de asistencia eliminado.')
         return redirect('lista_asistencia')
     return render(request, 'asistencia/confirmar_eliminar.html', {'asistencia': asistencia})
+
+
+@login_required
+def resumen_asistencia(request):
+    cursos = Curso.objects.all()
+    curso_codigo = request.GET.get('curso', '')
+    fecha_inicio = request.GET.get('fecha_inicio', '')
+    fecha_fin = request.GET.get('fecha_fin', '')
+    curso_seleccionado = None
+    filas = []
+    totales = {'presentes': 0, 'ausentes': 0, 'justificados': 0, 'total': 0}
+
+    if curso_codigo:
+        try:
+            curso_seleccionado = Curso.objects.get(codigo=curso_codigo)
+            alumnos = curso_seleccionado.alumnos.all().order_by('apellido', 'nombre')
+            for alumno in alumnos:
+                qs = Asistencia.objects.filter(alumno=alumno, curso=curso_seleccionado)
+                if fecha_inicio:
+                    qs = qs.filter(fecha__gte=fecha_inicio)
+                if fecha_fin:
+                    qs = qs.filter(fecha__lte=fecha_fin)
+                total = qs.count()
+                presentes = qs.filter(estado='P').count()
+                ausentes = qs.filter(estado='A').count()
+                justificados = qs.filter(estado='J').count()
+                porcentaje = round((presentes / total) * 100) if total > 0 else None
+                filas.append({
+                    'alumno': alumno,
+                    'total': total,
+                    'presentes': presentes,
+                    'ausentes': ausentes,
+                    'justificados': justificados,
+                    'porcentaje': porcentaje,
+                })
+                totales['presentes'] += presentes
+                totales['ausentes'] += ausentes
+                totales['justificados'] += justificados
+                totales['total'] += total
+        except Curso.DoesNotExist:
+            pass
+
+    totales['porcentaje'] = round((totales['presentes'] / totales['total']) * 100) if totales['total'] > 0 else None
+
+    return render(request, 'asistencia/resumen.html', {
+        'cursos': cursos,
+        'curso_seleccionado': curso_seleccionado,
+        'curso_codigo': curso_codigo,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+        'filas': filas,
+        'totales': totales,
+    })

@@ -87,3 +87,71 @@ def eliminar_nota(request, nota_id):
         messages.success(request, 'Nota eliminada exitosamente.')
         return redirect('lista_notas')
     return render(request, 'notas/confirmar_eliminar.html', {'nota': nota})
+
+
+@login_required
+def boletin_notas(request):
+    cursos = Curso.objects.all()
+    curso_codigo = request.GET.get('curso', '')
+    curso_seleccionado = None
+    filas = []
+    promedio_curso = None
+    total_aprobados = 0
+
+    if curso_codigo:
+        try:
+            curso_seleccionado = Curso.objects.get(codigo=curso_codigo)
+            alumnos = curso_seleccionado.alumnos.all().order_by('apellido', 'nombre')
+
+            for alumno in alumnos:
+                notas = Nota.objects.filter(alumno=alumno, curso=curso_seleccionado)
+                total_notas = notas.count()
+                avg = notas.aggregate(Avg('nota'))['nota__avg']
+                promedio = round(float(avg), 1) if avg else None
+
+                # Promedios por tipo
+                tipos_data = {}
+                for codigo, label in Nota.TIPO_CHOICES:
+                    notas_tipo = notas.filter(tipo_evaluacion=codigo)
+                    if notas_tipo.exists():
+                        avg_tipo = notas_tipo.aggregate(Avg('nota'))['nota__avg']
+                        tipos_data[codigo] = {
+                            'label': label,
+                            'promedio': round(float(avg_tipo), 1),
+                            'count': notas_tipo.count(),
+                        }
+
+                if promedio and promedio >= 4.0:
+                    total_aprobados += 1
+
+                # Build ordered list for template iteration
+                tipos_list = []
+                for codigo, label in Nota.TIPO_CHOICES:
+                    tipos_list.append(tipos_data.get(codigo))
+
+                filas.append({
+                    'alumno': alumno,
+                    'total_notas': total_notas,
+                    'promedio': promedio,
+                    'tipos_list': tipos_list,
+                    'aprobado': promedio >= 4.0 if promedio else None,
+                })
+
+            if filas:
+                promedios_validos = [f['promedio'] for f in filas if f['promedio']]
+                if promedios_validos:
+                    promedio_curso = round(sum(promedios_validos) / len(promedios_validos), 1)
+
+        except Curso.DoesNotExist:
+            pass
+
+    return render(request, 'notas/boletin.html', {
+        'cursos': cursos,
+        'curso_seleccionado': curso_seleccionado,
+        'curso_codigo': curso_codigo,
+        'filas': filas,
+        'promedio_curso': promedio_curso,
+        'total_aprobados': total_aprobados,
+        'total_reprobados': len(filas) - total_aprobados,
+        'tipo_choices': Nota.TIPO_CHOICES,
+    })

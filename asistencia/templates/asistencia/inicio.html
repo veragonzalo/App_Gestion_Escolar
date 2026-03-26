@@ -72,7 +72,7 @@
                         <p class="text-white/90 text-lg mb-8 leading-relaxed">
                             Controle la asistencia diaria de los alumnos por curso, consulte el historial y genere reportes de presencia y ausencia.
                         </p>
-                        <div class="flex gap-4">
+                        <div class="flex gap-4 flex-wrap">
                             <a href="{% url 'registrar_asistencia' %}" class="inline-flex items-center gap-2 bg-white text-[#002147] px-6 py-3 rounded-lg font-bold hover:bg-slate-100 transition-all shadow-lg">
                                 <span class="material-symbols-outlined">add_task</span>
                                 <span>Registrar Asistencia</span>
@@ -80,6 +80,10 @@
                             <a href="{% url 'lista_asistencia' %}" class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 px-6 py-3 rounded-lg font-bold hover:bg-white/20 transition-all">
                                 <span class="material-symbols-outlined">list</span>
                                 <span>Ver Registros</span>
+                            </a>
+                            <a href="{% url 'resumen_asistencia' %}" class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 px-6 py-3 rounded-lg font-bold hover:bg-white/20 transition-all">
+                                <span class="material-symbols-outlined">bar_chart</span>
+                                <span>Resumen por Curso</span>
                             </a>
                         </div>
                     </div>
