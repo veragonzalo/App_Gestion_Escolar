@@ -6,6 +6,7 @@ from cursos.models import Curso
 from notas.models import Nota
 from asistencia.models import Asistencia
 from apoderados.models import Apoderado
+from comunicaciones.models import Comunicado
 
 
 @login_required
@@ -17,6 +18,7 @@ def inicio(request):
         'total_notas': Nota.objects.count(),
         'total_asistencias': Asistencia.objects.count(),
         'total_apoderados': Apoderado.objects.count(),
+        'comunicados_recientes': Comunicado.objects.filter(activo=True)[:4],
     }
     return render(request, "base.html", contexto)
 

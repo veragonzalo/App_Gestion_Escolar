@@ -156,10 +156,20 @@
             <div class="flex items-center gap-3 ml-auto">
 
                 <!-- Notificaciones -->
-                <button class="text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10 relative">
+                <a href="{% url 'inicio_comunicaciones' %}" class="text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10 relative">
                     <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                    {% if notif_count %}
+                        {% if notif_urgentes %}
+                        <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                            <span class="text-white text-[9px] font-bold leading-none">{{ notif_urgentes }}</span>
+                        </span>
+                        {% else %}
+                        <span class="absolute top-1 right-1 w-4 h-4 bg-sky-400 rounded-full flex items-center justify-center">
+                            <span class="text-white text-[9px] font-bold leading-none">{{ notif_count }}</span>
+                        </span>
+                        {% endif %}
+                    {% endif %}
+                </a>
 
                 {% if user.is_authenticated %}
                     <!-- Usuario -->
@@ -404,6 +414,50 @@
 
                 </div>
             </section>
+
+            <!-- Comunicados recientes -->
+            {% if comunicados_recientes %}
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-sky-100 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-sky-600">campaign</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Comunicados activos</h3>
+                    </div>
+                    <a href="{% url 'lista_comunicados' %}" class="text-sm font-semibold text-[#002147] hover:underline flex items-center gap-1">
+                        Ver todos
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    {% for com in comunicados_recientes %}
+                    <a href="{% url 'detalle_comunicado' com.pk %}"
+                       class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-sky-200 transition-all p-4 flex items-start gap-4 group">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center
+                            {% if com.tipo == 'UR' %}bg-red-100{% elif com.tipo == 'CI' %}bg-blue-100{% else %}bg-amber-100{% endif %}">
+                            <span class="material-symbols-outlined text-lg
+                                {% if com.tipo == 'UR' %}text-red-600{% elif com.tipo == 'CI' %}text-blue-600{% else %}text-amber-600{% endif %}">
+                                {{ com.icono_tipo }}
+                            </span>
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="text-xs font-bold px-2 py-0.5 rounded-full
+                                    {% if com.tipo == 'UR' %}bg-red-100 text-red-700{% elif com.tipo == 'CI' %}bg-blue-100 text-blue-700{% else %}bg-amber-100 text-amber-700{% endif %}">
+                                    {{ com.get_tipo_display }}
+                                </span>
+                                {% if com.curso %}<span class="text-xs text-slate-400">{{ com.curso.nombre }}</span>{% endif %}
+                            </div>
+                            <p class="font-bold text-slate-900 group-hover:text-sky-700 transition-colors truncate">{{ com.titulo }}</p>
+                            <p class="text-sm text-slate-500 truncate">{{ com.contenido }}</p>
+                        </div>
+                        <p class="text-xs text-slate-400 flex-shrink-0 whitespace-nowrap">{{ com.fecha_publicacion|date:"d/m/Y" }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
 
         </main>
     </div>
