@@ -98,12 +98,55 @@
             {% endif %}
 
             {% if asistencias %}
-                <div class="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-blue-600 text-2xl">info</span>
-                        <p class="text-blue-800 text-sm">Mostrando <strong>{{ asistencias|length }}</strong> registro{{ asistencias|length|pluralize:"s" }}</p>
+                {% if tiene_filtros %}
+                <div class="mb-5 grid grid-cols-4 gap-3">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-blue-600">groups</span>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-slate-900">{{ asistencias|length }}</p>
+                            <p class="text-xs text-slate-500">Total registros</p>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-emerald-700">{{ resumen_presentes }}</p>
+                            <p class="text-xs text-slate-500">Presentes</p>
+                        </div>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-red-600">cancel</span>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-red-600">{{ resumen_ausentes }}</p>
+                            <p class="text-xs text-slate-500">Ausentes</p>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-amber-600">schedule</span>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-amber-600">{{ resumen_justificados }}</p>
+                            <p class="text-xs text-slate-500">Justificados</p>
+                        </div>
                     </div>
                 </div>
+                {% if filtro_curso and filtro_fecha %}
+                <div class="mb-4 flex justify-end">
+                    <a href="{% url 'registrar_asistencia' %}?curso={{ filtro_curso }}&fecha={{ filtro_fecha }}"
+                       class="inline-flex items-center gap-2 border border-[#002147] text-[#002147] hover:bg-[#002147] hover:text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                        Editar este registro
+                    </a>
+                </div>
+                {% endif %}
+                {% endif %}
 
                 <div class="overflow-x-auto">
                     <table class="w-full">

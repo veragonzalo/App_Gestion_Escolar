@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from datetime import date, datetime
 from .models import Asistencia
-from .forms import AsistenciaForm
 from cursos.models import Curso
 from usuarios.decorators import requiere_academico
 
@@ -20,9 +20,9 @@ def portal_asistencia(request):
 
 @login_required
 def lista_asistencia(request):
+    curso_id = request.GET.get('curso', '')
+    fecha = request.GET.get('fecha', '')
     asistencias = Asistencia.objects.select_related('curso', 'alumno').all()
-    curso_id = request.GET.get('curso')
-    fecha = request.GET.get('fecha')
     if curso_id:
         asistencias = asistencias.filter(curso__codigo=curso_id)
     if fecha:
@@ -32,6 +32,10 @@ def lista_asistencia(request):
         'cursos': Curso.objects.all(),
         'filtro_curso': curso_id,
         'filtro_fecha': fecha,
+        'tiene_filtros': bool(curso_id or fecha),
+        'resumen_presentes': asistencias.filter(estado='P').count(),
+        'resumen_ausentes': asistencias.filter(estado='A').count(),
+        'resumen_justificados': asistencias.filter(estado='J').count(),
     }
     return render(request, 'asistencia/lista_asistencia.html', contexto)
 
@@ -45,17 +49,70 @@ def detalle_asistencia(request, asistencia_id):
 @login_required
 @requiere_academico
 def registrar_asistencia(request):
+    cursos = Curso.objects.all()
+
     if request.method == 'POST':
-        form = AsistenciaForm(request.POST)
-        if form.is_valid():
-            asistencia = form.save()
-            messages.success(request, f'Asistencia registrada: {asistencia.alumno} — {asistencia.get_estado_display()}')
-            return redirect('lista_asistencia')
-        else:
-            messages.error(request, 'Por favor corrija los errores del formulario.')
-    else:
-        form = AsistenciaForm()
-    return render(request, 'asistencia/registrar_asistencia.html', {'form': form})
+        curso_codigo = request.POST.get('curso')
+        fecha_str = request.POST.get('fecha')
+        curso = get_object_or_404(Curso, codigo=curso_codigo)
+
+        try:
+            fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        except (ValueError, TypeError):
+            messages.error(request, 'Fecha inválida.')
+            return redirect('registrar_asistencia')
+
+        if fecha_obj > date.today():
+            messages.error(request, 'La fecha no puede ser futura.')
+            return redirect(f"/asistencia/registrar/?curso={curso_codigo}&fecha={fecha_str}")
+
+        alumnos = curso.alumnos.all()
+        if not alumnos.exists():
+            messages.warning(request, 'Este curso no tiene alumnos inscritos.')
+            return redirect('registrar_asistencia')
+
+        for alumno in alumnos:
+            estado = request.POST.get(f'estado_{alumno.rut}', 'A')
+            if estado not in ('P', 'A', 'J'):
+                estado = 'A'
+            Asistencia.objects.update_or_create(
+                fecha=fecha_obj,
+                curso=curso,
+                alumno=alumno,
+                defaults={'estado': estado}
+            )
+
+        messages.success(request, f'Asistencia guardada: {alumnos.count()} alumnos — {curso.nombre} — {fecha_obj.strftime("%d/%m/%Y")}')
+        return redirect('lista_asistencia')
+
+    # GET: cargar alumnos si vienen curso+fecha en query params
+    curso_codigo = request.GET.get('curso', '')
+    fecha = request.GET.get('fecha', '')
+    curso_seleccionado = None
+    alumnos_con_estado = []
+
+    if curso_codigo and fecha:
+        try:
+            curso_seleccionado = Curso.objects.get(codigo=curso_codigo)
+            alumnos = curso_seleccionado.alumnos.all().order_by('apellido', 'nombre')
+            existentes = {
+                a.alumno_id: a.estado
+                for a in Asistencia.objects.filter(curso=curso_seleccionado, fecha=fecha)
+            }
+            alumnos_con_estado = [
+                {'alumno': a, 'estado': existentes.get(a.rut, 'P')}
+                for a in alumnos
+            ]
+        except Curso.DoesNotExist:
+            pass
+
+    return render(request, 'asistencia/registrar_asistencia.html', {
+        'cursos': cursos,
+        'curso_seleccionado': curso_seleccionado,
+        'alumnos_con_estado': alumnos_con_estado,
+        'fecha': fecha,
+        'curso_codigo': curso_codigo,
+    })
 
 
 @login_required
