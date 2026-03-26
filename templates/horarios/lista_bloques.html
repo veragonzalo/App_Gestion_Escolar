@@ -18,11 +18,13 @@
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Bloques Horarios</h1>
                 <p class="text-sm text-slate-500 mt-1">{{ bloques|length }} bloque{{ bloques|length|pluralize }} registrado{{ bloques|length|pluralize }}</p>
             </div>
+            {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_bloque' %}"
                class="flex items-center gap-2 bg-[#002147] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
                 <span class="material-symbols-outlined text-lg">add</span>
                 Nuevo Bloque
             </a>
+            {% endif %}
         </div>
     </section>
 
@@ -79,6 +81,7 @@
                         <td class="py-3 px-4 text-slate-400">{{ bloque.sala|default:"—" }}</td>
                         <td class="py-3 px-4">
                             <div class="flex gap-2 justify-end">
+                                {% if perfil.puede_editar or user.is_superuser %}
                                 <a href="{% url 'editar_bloque' bloque.pk %}"
                                    class="p-1.5 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition-colors">
                                     <span class="material-symbols-outlined text-lg">edit</span>
@@ -87,6 +90,7 @@
                                    class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors">
                                     <span class="material-symbols-outlined text-lg">delete</span>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -101,11 +105,13 @@
             </div>
             <h3 class="text-xl font-bold text-slate-700 mb-2">Sin bloques registrados</h3>
             <p class="text-slate-500 text-sm mb-6">No hay bloques horarios para mostrar.</p>
+            {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_bloque' %}"
                class="inline-flex items-center gap-2 bg-[#002147] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#003063] transition-colors">
                 <span class="material-symbols-outlined">add</span>
                 Crear primer bloque
             </a>
+            {% endif %}
         </div>
         {% endif %}
     </main>

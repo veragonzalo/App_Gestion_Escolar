@@ -157,6 +157,7 @@
                                                     <span class="hidden sm:inline">Ver</span>
                                                 </a>
 
+                                                {% if perfil.puede_editar or user.is_superuser %}
                                                 <!-- Botón Editar -->
                                                 <a href="{% url 'editar_alumno' alumno.rut %}" class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Editar">
                                                     <span class="material-symbols-outlined text-sm">edit</span>
@@ -168,6 +169,7 @@
                                                     <span class="material-symbols-outlined text-sm">delete</span>
                                                     <span class="hidden sm:inline">Eliminar</span>
                                                 </a>
+                                                {% endif %}
                                             </div>
                                         </td>
 
@@ -185,6 +187,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-2">No hay alumnos matriculados</h3>
                         <p class="text-slate-500 mb-6">Actualmente no hay alumnos en el sistema. Comience registrando el primer estudiante.</p>
+                        {% if perfil.puede_editar or user.is_superuser %}
                         <a
                             href="{% url 'registrar_alumno' %}"
                             class="inline-flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-[#002147]/20 transition-all"
@@ -192,6 +195,7 @@
                             <span class="material-symbols-outlined">add</span>
                             <span>Registrar Primer Alumno</span>
                         </a>
+                        {% endif %}
                     </div>
                 {% endif %}
 

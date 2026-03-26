@@ -115,6 +115,7 @@
                     </div>
                 </a>
 
+                {% if perfil.puede_editar or user.is_superuser %}
                 <a href="{% url 'crear_bloque' %}"
                    class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-violet-300 shadow-sm hover:shadow-lg transition-all flex items-center gap-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center shadow group-hover:scale-110 transition-transform">
@@ -125,6 +126,7 @@
                         <p class="text-sm text-slate-500">Crear nuevo bloque en el horario semanal</p>
                     </div>
                 </a>
+                {% endif %}
 
                 <a href="{% url 'lista_bloques' %}"
                    class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-lg transition-all flex items-center gap-4">

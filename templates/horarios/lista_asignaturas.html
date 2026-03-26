@@ -18,11 +18,13 @@
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Asignaturas</h1>
                 <p class="text-sm text-slate-500 mt-1">{{ asignaturas|length }} asignatura{{ asignaturas|length|pluralize }} registrada{{ asignaturas|length|pluralize }}</p>
             </div>
+            {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_asignatura' %}"
                class="flex items-center gap-2 bg-[#002147] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
                 <span class="material-symbols-outlined text-lg">add</span>
                 Nueva Asignatura
             </a>
+            {% endif %}
         </div>
     </section>
 
@@ -44,6 +46,7 @@
                        class="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-[#002147]">
                         <span class="material-symbols-outlined text-lg">visibility</span>
                     </a>
+                    {% if perfil.puede_editar or user.is_superuser %}
                     <a href="{% url 'editar_asignatura' asignatura.pk %}"
                        class="p-2 rounded-lg hover:bg-blue-50 transition-colors text-slate-500 hover:text-blue-600">
                         <span class="material-symbols-outlined text-lg">edit</span>
@@ -52,6 +55,7 @@
                        class="p-2 rounded-lg hover:bg-red-50 transition-colors text-slate-500 hover:text-red-600">
                         <span class="material-symbols-outlined text-lg">delete</span>
                     </a>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -63,11 +67,13 @@
             </div>
             <h3 class="text-xl font-bold text-slate-700 mb-2">Sin asignaturas</h3>
             <p class="text-slate-500 text-sm mb-6">Crea las asignaturas del plan de estudios para comenzar.</p>
+            {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_asignatura' %}"
                class="inline-flex items-center gap-2 bg-[#002147] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#003063] transition-colors">
                 <span class="material-symbols-outlined">add</span>
                 Crear primera asignatura
             </a>
+            {% endif %}
         </div>
         {% endif %}
     </main>

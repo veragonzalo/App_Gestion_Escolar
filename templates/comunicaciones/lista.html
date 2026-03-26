@@ -18,11 +18,13 @@
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Todos los Comunicados</h1>
                 <p class="text-sm text-slate-500 mt-1">{{ comunicados|length }} comunicado{{ comunicados|length|pluralize }}</p>
             </div>
+            {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_comunicado' %}"
                class="flex items-center gap-2 bg-[#002147] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
                 <span class="material-symbols-outlined text-lg">add</span>
                 Nuevo Comunicado
             </a>
+            {% endif %}
         </div>
     </section>
 
@@ -84,6 +86,7 @@
                        class="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#002147] transition-colors">
                         <span class="material-symbols-outlined text-lg">visibility</span>
                     </a>
+                    {% if perfil.puede_editar or user.is_superuser %}
                     <a href="{% url 'editar_comunicado' com.pk %}"
                        class="p-2 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition-colors">
                         <span class="material-symbols-outlined text-lg">edit</span>
@@ -92,6 +95,7 @@
                        class="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors">
                         <span class="material-symbols-outlined text-lg">delete</span>
                     </a>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

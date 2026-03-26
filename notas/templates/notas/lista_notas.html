@@ -53,10 +53,12 @@
                         <p class="text-white/70 text-sm mt-1">Calificaciones por alumno y curso</p>
                     </div>
                 </div>
+                {% if perfil.puede_editar_academico or user.is_superuser %}
                 <a href="{% url 'registrar_nota' %}" class="inline-flex items-center gap-2 bg-white text-[#002147] px-5 py-2.5 rounded-lg font-bold hover:bg-slate-100 transition-all shadow-lg text-sm">
                     <span class="material-symbols-outlined text-lg">add</span>
                     Nueva Nota
                 </a>
+                {% endif %}
             </div>
         </div>
 
@@ -176,6 +178,7 @@
                                             <span class="material-symbols-outlined text-sm">visibility</span>
                                             <span class="hidden sm:inline">Ver</span>
                                         </a>
+                                        {% if perfil.puede_editar_academico or user.is_superuser %}
                                         <a href="{% url 'editar_nota' nota.id %}" class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Editar">
                                             <span class="material-symbols-outlined text-sm">edit</span>
                                             <span class="hidden sm:inline">Editar</span>
@@ -184,6 +187,7 @@
                                             <span class="material-symbols-outlined text-sm">delete</span>
                                             <span class="hidden sm:inline">Eliminar</span>
                                         </a>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
@@ -199,10 +203,12 @@
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">No hay notas registradas</h3>
                     <p class="text-slate-500 mb-6">{% if filtro_curso or filtro_alumno %}No se encontraron notas con los filtros aplicados.{% else %}Comience registrando la primera nota.{% endif %}</p>
+                    {% if perfil.puede_editar_academico or user.is_superuser %}
                     <a href="{% url 'registrar_nota' %}" class="inline-flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-[#002147]/20 transition-all">
                         <span class="material-symbols-outlined">add</span>
                         Registrar Nota
                     </a>
+                    {% endif %}
                 </div>
             {% endif %}
 

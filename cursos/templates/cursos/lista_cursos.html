@@ -273,6 +273,7 @@
                                     </a>
 
 
+                                    {% if perfil.puede_editar or user.is_superuser %}
                                     <a href="{% url 'editar_curso' curso.codigo %}"
                                        class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all">
 
@@ -299,6 +300,7 @@
                                         </span>
 
                                     </a>
+                                    {% endif %}
 
                                 </div>
 
@@ -333,6 +335,7 @@
                     Actualmente no hay cursos en el sistema.
                 </p>
 
+                {% if perfil.puede_editar or user.is_superuser %}
                 <a href="{% url 'registrar_curso' %}"
                    class="inline-flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-[#002147]/20 transition-all">
 
@@ -345,6 +348,7 @@
                     </span>
 
                 </a>
+                {% endif %}
 
             </div>
 

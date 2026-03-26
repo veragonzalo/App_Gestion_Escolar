@@ -17,6 +17,7 @@
                 </div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ comunicado.titulo }}</h1>
             </div>
+            {% if perfil.puede_editar or user.is_superuser %}
             <div class="flex gap-3">
                 <a href="{% url 'editar_comunicado' comunicado.pk %}"
                    class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
@@ -29,6 +30,7 @@
                     Eliminar
                 </a>
             </div>
+            {% endif %}
         </div>
     </section>
 
