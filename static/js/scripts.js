@@ -13,3 +13,16 @@ tailwind.config = {
         },
     },
 }
+
+function toggleModulos() {
+    const dropdown = document.getElementById('modulos-dropdown');
+    dropdown.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(e) {
+    const btn = document.getElementById('modulos-btn');
+    const dropdown = document.getElementById('modulos-dropdown');
+    if (btn && dropdown && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
