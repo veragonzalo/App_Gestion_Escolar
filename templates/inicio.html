@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% block titulo %}Dashboard - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+  <!-- Header -->
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <p class="text-sm text-slate-500 mb-0.5">Bienvenido de vuelta,</p>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ user.get_full_name|default:user.username }}</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          {% if perfil %}{{ perfil.get_rol_display }}{% endif %}
+          · Sistema de Gestión Escolar
+        </p>
+      </div>
+      <div class="flex gap-3 flex-wrap">
+        {% if perfil.puede_editar or user.is_superuser %}
+        <a href="{% url 'nuevo_alumno' %}" class="flex items-center gap-2 bg-[#002147] hover:bg-[#003063] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow">
+          <span class="material-symbols-outlined text-lg">person_add</span>Nuevo Alumno
+        </a>
+        {% endif %}
+        {% if perfil.puede_editar_academico or perfil.puede_editar or user.is_superuser %}
+        <a href="{% url 'registrar_asistencia' %}" class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-lg">add_task</span>Registrar Asistencia
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-grow w-full max-w-7xl mx-auto p-8 space-y-8">
+
+    <!-- Stats -->
+    <section>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+        <a href="{% url 'lista_alumnos' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-blue-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-xl">school</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_alumnos }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Alumnos</p>
+        </a>
+
+        <a href="{% url 'lista_profesores' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-indigo-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-indigo-200 transition-colors">
+            <span class="material-symbols-outlined text-indigo-600 text-xl">badge</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_profesores }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Profesores</p>
+        </a>
+
+        <a href="{% url 'lista_cursos' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-emerald-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-emerald-200 transition-colors">
+            <span class="material-symbols-outlined text-emerald-600 text-xl">menu_book</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_cursos }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Cursos</p>
+        </a>
+
+        <a href="{% url 'lista_asistencia' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-teal-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-teal-200 transition-colors">
+            <span class="material-symbols-outlined text-teal-600 text-xl">fact_check</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_asistencias }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Asistencias</p>
+        </a>
+
+        <a href="{% url 'lista_notas' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-purple-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-200 transition-colors">
+            <span class="material-symbols-outlined text-purple-600 text-xl">grade</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_notas }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Notas</p>
+        </a>
+
+        <a href="{% url 'lista_apoderados' %}" class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col items-center text-center hover:border-amber-300 hover:shadow-md transition-all group">
+          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-amber-200 transition-colors">
+            <span class="material-symbols-outlined text-amber-600 text-xl">family_restroom</span>
+          </div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_apoderados }}</p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Apoderados</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Módulos + Comunicados (dos columnas) -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Módulos (2/3) -->
+      <div class="lg:col-span-2">
+        <h2 class="text-lg font-bold text-slate-800 mb-4">Acceso rápido a módulos</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+          <a href="{% url 'inicio_alumnos' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">person_search</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-sm leading-tight">Alumnos</p>
+              <p class="text-xs text-slate-400 mt-0.5">Matrículas y perfiles</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_profesores' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">badge</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-sm leading-tight">Profesores</p>
+              <p class="text-xs text-slate-400 mt-0.5">Docentes y horarios</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_cursos' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">menu_book</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors text-sm leading-tight">Cursos</p>
+              <p class="text-xs text-slate-400 mt-0.5">Planificación curricular</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_asistencia' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">fact_check</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-teal-600 transition-colors text-sm leading-tight">Asistencia</p>
+              <p class="text-xs text-slate-400 mt-0.5">Registro diario</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_notas' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-purple-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md shadow-purple-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">grade</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-purple-600 transition-colors text-sm leading-tight">Notas</p>
+              <p class="text-xs text-slate-400 mt-0.5">Calificaciones</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_apoderados' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-amber-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">family_restroom</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-amber-600 transition-colors text-sm leading-tight">Apoderados</p>
+              <p class="text-xs text-slate-400 mt-0.5">Vínculos familiares</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_horarios' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-violet-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">calendar_month</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-violet-600 transition-colors text-sm leading-tight">Horarios</p>
+              <p class="text-xs text-slate-400 mt-0.5">Plan semanal</p>
+            </div>
+          </a>
+
+          <a href="{% url 'inicio_comunicaciones' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-sky-300 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl flex items-center justify-center shadow-md shadow-sky-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">campaign</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-sky-600 transition-colors text-sm leading-tight">Comunicaciones</p>
+              <p class="text-xs text-slate-400 mt-0.5">Circulares y avisos</p>
+            </div>
+          </a>
+
+          {% if perfil.es_director or user.is_superuser %}
+          <a href="{% url 'lista_usuarios' %}" class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-400 shadow-sm hover:shadow-lg transition-all flex flex-col items-start gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-md shadow-slate-500/30 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-white text-xl">manage_accounts</span>
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 group-hover:text-slate-600 transition-colors text-sm leading-tight">Usuarios</p>
+              <p class="text-xs text-slate-400 mt-0.5">Cuentas y roles</p>
+            </div>
+          </a>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- Panel derecho: comunicados + acciones rápidas (1/3) -->
+      <div class="space-y-6">
+
+        <!-- Accesos directos de reportes -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Reportes rápidos</h3>
+          <div class="space-y-2">
+            <a href="{% url 'boletin_notas' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-purple-50 transition-colors group">
+              <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-purple-600 text-base">assignment</span>
+              </div>
+              <span class="text-sm font-semibold text-slate-700 group-hover:text-purple-700">Boletín de Notas</span>
+              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-purple-400">arrow_forward</span>
+            </a>
+            <a href="{% url 'resumen_asistencia' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-teal-50 transition-colors group">
+              <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-teal-600 text-base">bar_chart</span>
+              </div>
+              <span class="text-sm font-semibold text-slate-700 group-hover:text-teal-700">Resumen Asistencia</span>
+              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-teal-400">arrow_forward</span>
+            </a>
+            <a href="{% url 'inicio_horarios' %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-violet-50 transition-colors group">
+              <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-violet-600 text-base">calendar_view_week</span>
+              </div>
+              <span class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Ver Horarios</span>
+              <span class="material-symbols-outlined text-slate-300 text-sm ml-auto group-hover:text-violet-400">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Comunicados recientes -->
+        {% if comunicados_recientes %}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Comunicados activos</h3>
+            <a href="{% url 'lista_comunicados' %}" class="text-xs font-semibold text-[#002147] hover:underline">Ver todos</a>
+          </div>
+          <div class="space-y-2">
+            {% for com in comunicados_recientes %}
+            <a href="{% url 'detalle_comunicado' com.pk %}" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+                  {% if com.tipo == 'UR' %}bg-red-100{% elif com.tipo == 'CI' %}bg-blue-100{% else %}bg-amber-100{% endif %}">
+                <span class="material-symbols-outlined text-base
+                    {% if com.tipo == 'UR' %}text-red-600{% elif com.tipo == 'CI' %}text-blue-600{% else %}text-amber-600{% endif %}">
+                  {{ com.icono_tipo }}
+                </span>
+              </div>
+              <div class="min-w-0 flex-grow">
+                <p class="text-sm font-semibold text-slate-800 group-hover:text-[#002147] truncate transition-colors">{{ com.titulo }}</p>
+                <p class="text-xs text-slate-400">{{ com.fecha_publicacion|date:"d/m/Y" }}</p>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+    </section>
+
+  </main>
+</div>
+{% endblock %}

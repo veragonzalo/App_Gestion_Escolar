@@ -20,7 +20,7 @@ def inicio(request):
         'total_apoderados': Apoderado.objects.count(),
         'comunicados_recientes': Comunicado.objects.filter(activo=True)[:4],
     }
-    return render(request, "base.html", contexto)
+    return render(request, "inicio.html", contexto)
 
 
 
