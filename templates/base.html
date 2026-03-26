@@ -143,11 +143,17 @@
 
                     </div>
 
-                    <div class="mt-3 pt-3 border-t border-slate-100">
+                    <div class="mt-3 pt-3 border-t border-slate-100 space-y-1">
                         <a href="{% url 'inicio' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-[#002147] font-medium transition-colors">
                             <span class="material-symbols-outlined text-lg">home</span>
                             Volver al Dashboard
                         </a>
+                        {% if perfil.es_director or user.is_superuser %}
+                        <a href="{% url 'lista_usuarios' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-[#002147] font-medium transition-colors">
+                            <span class="material-symbols-outlined text-lg">manage_accounts</span>
+                            Gestión de Usuarios
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

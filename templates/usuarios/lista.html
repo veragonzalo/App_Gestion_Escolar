@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block titulo %}Usuarios - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                    <span>›</span>
+                    <span class="text-slate-700 font-medium">Usuarios</span>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Gestión de Usuarios</h1>
+                <p class="text-sm text-slate-500 mt-1">{{ usuarios|length }} usuario{{ usuarios|length|pluralize }} registrado{{ usuarios|length|pluralize }}</p>
+            </div>
+            <a href="{% url 'crear_usuario' %}"
+               class="flex items-center gap-2 bg-[#002147] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
+                <span class="material-symbols-outlined text-lg">person_add</span>
+                Nuevo Usuario
+            </a>
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+
+        {% if messages %}
+        {% for msg in messages %}
+        <div class="mb-4 px-4 py-3 rounded-xl text-sm font-medium
+            {% if msg.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+            {{ msg }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase">Usuario</th>
+                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase">Nombre</th>
+                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase">Rol</th>
+                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase">Profesor vinculado</th>
+                        <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase">Estado</th>
+                        <th class="py-3 px-4"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for u in usuarios %}
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-[#002147] flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white text-xs font-bold">{{ u.username|first|upper }}</span>
+                                </div>
+                                <span class="font-semibold text-slate-800">{{ u.username }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-slate-600">{{ u.get_full_name|default:"—" }}</td>
+                        <td class="py-3 px-4">
+                            {% if u.is_superuser %}
+                            <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                                <span class="material-symbols-outlined text-xs">shield</span>
+                                Superusuario
+                            </span>
+                            {% elif u.perfil %}
+                            <span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full
+                                {% if u.perfil.rol == 'DIRECTOR' %}bg-blue-100 text-blue-700
+                                {% elif u.perfil.rol == 'SECRETARIA' %}bg-amber-100 text-amber-700
+                                {% elif u.perfil.rol == 'PROFESOR' %}bg-emerald-100 text-emerald-700
+                                {% else %}bg-slate-100 text-slate-600{% endif %}">
+                                {{ u.perfil.get_rol_display }}
+                            </span>
+                            {% else %}
+                            <span class="text-xs text-slate-400">Sin rol asignado</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-slate-600">
+                            {% if u.perfil.profesor %}{{ u.perfil.profesor }}{% else %}—{% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            {% if u.is_active %}
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Activo
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-400">
+                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>Inactivo
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex gap-2 justify-end">
+                                <a href="{% url 'editar_usuario' u.pk %}"
+                                   class="p-1.5 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition-colors">
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                </a>
+                                {% if u != request.user %}
+                                <a href="{% url 'eliminar_usuario' u.pk %}"
+                                   class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}
