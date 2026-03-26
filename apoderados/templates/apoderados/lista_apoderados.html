@@ -103,74 +103,74 @@
                         <table class="w-full">
                             <thead>
                                 <tr class="border-b-2 border-slate-200">
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">badge</span>
                                             <span>RUT</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">person</span>
                                             <span>Nombre Completo</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">phone</span>
                                             <span>Teléfono</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">mail</span>
                                             <span>Correo</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-lg">school</span>
                                             <span>Alumnos a Cargo</span>
                                         </div>
                                     </th>
-                                    <th class="text-left py-4 px-4 text-sm font-bold text-slate-700 uppercase tracking-wider">Acciones</th>
+                                    <th class="text-left py-3 px-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for apoderado in lista_apoderados %}
                                     <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             <div class="flex items-center gap-2">
-                                                <div class="w-10 h-10 bg-[#002147] text-white rounded-lg flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-lg">badge</span>
+                                                <div class="w-8 h-8 bg-[#002147] text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <span class="material-symbols-outlined text-sm">badge</span>
                                                 </div>
                                                 <span class="font-mono text-sm font-bold text-slate-700">{{ apoderado.rut }}</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-teal-600 text-xl">person</span>
+                                        <td class="py-3 px-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-9 h-9 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <span class="material-symbols-outlined text-teal-600 text-lg">person</span>
                                                 </div>
                                                 <div>
-                                                    <p class="font-bold text-slate-900 text-lg">{{ apoderado.nombre }} {{ apoderado.apellido }}</p>
-                                                    <p class="text-slate-500 text-xs">Apoderado activo</p>
+                                                    <p class="font-semibold text-slate-900">{{ apoderado.nombre }} {{ apoderado.apellido }}</p>
+                                                    <p class="text-slate-400 text-xs">Apoderado activo</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-lg">phone</span>
+                                                <span class="material-symbols-outlined text-slate-400 text-base">phone</span>
                                                 <span class="text-slate-700 text-sm">{{ apoderado.telefono }}</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-lg">mail</span>
+                                                <span class="material-symbols-outlined text-slate-400 text-base">mail</span>
                                                 <span class="text-slate-700 text-sm">{{ apoderado.email }}</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-3 px-3">
                                             {% if apoderado.alumnos.all %}
                                                 <div class="flex flex-wrap gap-1">
                                                     {% for alumno in apoderado.alumnos.all %}
@@ -184,20 +184,17 @@
                                                 <span class="text-slate-400 text-sm italic">Sin alumnos asignados</span>
                                             {% endif %}
                                         </td>
-                                        <td class="py-4 px-4">
-                                            <div class="flex items-center justify-center gap-2">
-                                                <a href="{% url 'detalle_apoderado' apoderado.rut %}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Ver detalle">
-                                                    <span class="material-symbols-outlined text-sm">visibility</span>
-                                                    <span class="hidden sm:inline">Ver</span>
+                                        <td class="py-3 px-3">
+                                            <div class="flex items-center justify-center gap-1.5">
+                                                <a href="{% url 'detalle_apoderado' apoderado.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all" title="Ver detalle">
+                                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
                                                 </a>
                                                 {% if perfil.puede_editar or user.is_superuser %}
-                                                <a href="{% url 'editar_apoderado' apoderado.rut %}" class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Editar">
-                                                    <span class="material-symbols-outlined text-sm">edit</span>
-                                                    <span class="hidden sm:inline">Editar</span>
+                                                <a href="{% url 'editar_apoderado' apoderado.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all" title="Editar">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
                                                 </a>
-                                                <a href="{% url 'eliminar_apoderado' apoderado.rut %}" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all" title="Eliminar">
-                                                    <span class="material-symbols-outlined text-sm">delete</span>
-                                                    <span class="hidden sm:inline">Eliminar</span>
+                                                <a href="{% url 'eliminar_apoderado' apoderado.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all" title="Eliminar">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
                                                 </a>
                                                 {% endif %}
                                             </div>
