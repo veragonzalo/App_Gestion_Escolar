@@ -7,7 +7,7 @@ class PerfilUsuario(models.Model):
     ROL_CHOICES = [
         ('SUPER',      'Superusuario'),
         ('DIRECTOR',   'Director'),
-        ('SECRETARIA', 'Secretaria / Administrativo'),
+        ('SECRETARIA', 'Administrativo'),
         ('PROFESOR',   'Profesor'),
     ]
 
