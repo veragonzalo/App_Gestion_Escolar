@@ -71,10 +71,10 @@
         <h2 class="font-bold text-slate-800">{{ curso_seleccionado.nombre }}</h2>
         <div class="flex items-center gap-3">
           <span class="text-xs text-slate-400">{{ filas|length }} alumno{{ filas|length|pluralize }}</span>
-          <a href="{% url 'exportar_boletin_csv' %}?curso={{ curso_codigo }}"
-             class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
-            <span class="material-symbols-outlined text-sm">download</span>
-            Exportar CSV
+          <a href="{% url 'imprimir_boletin' %}?curso={{ curso_codigo }}" target="_blank"
+             class="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+            Exportar PDF
           </a>
         </div>
       </div>

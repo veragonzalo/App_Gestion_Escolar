@@ -1,10 +1,8 @@
-import csv
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg
-from django.http import HttpResponse
 from .models import Nota
 from .forms import NotaForm
 from cursos.models import Curso
@@ -165,7 +163,7 @@ def boletin_notas(request):
 
 
 @login_required
-def exportar_boletin_csv(request):
+def imprimir_boletin(request):
     curso_codigo = request.GET.get('curso', '')
     if not curso_codigo:
         return redirect('boletin_notas')
@@ -174,37 +172,35 @@ def exportar_boletin_csv(request):
     except Curso.DoesNotExist:
         return redirect('boletin_notas')
 
-    response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
-    nombre_archivo = curso.nombre.replace(' ', '_')
-    response['Content-Disposition'] = f'attachment; filename="boletin_{nombre_archivo}.csv"'
-
-    writer = csv.writer(response)
-    headers = ['Alumno', 'RUT', 'Total Evaluaciones']
-    for codigo, label in Nota.TIPO_CHOICES:
-        headers.append(f'Prom. {label}')
-    headers += ['Promedio General', 'Estado']
-    writer.writerow(headers)
-
+    filas = []
+    total_aprobados = 0
     for alumno in curso.alumnos.all().order_by('apellido', 'nombre'):
         notas = Nota.objects.filter(alumno=alumno, curso=curso)
-        total_notas = notas.count()
         avg = notas.aggregate(Avg('nota'))['nota__avg']
         promedio = round(float(avg), 1) if avg else None
-        row = [f'{alumno.nombre} {alumno.apellido}', alumno.rut, total_notas]
+        tipos_data = {}
         for codigo, label in Nota.TIPO_CHOICES:
             nt = notas.filter(tipo_evaluacion=codigo)
             if nt.exists():
                 avg_t = nt.aggregate(Avg('nota'))['nota__avg']
-                row.append(round(float(avg_t), 1))
-            else:
-                row.append('')
-        row.append(promedio if promedio is not None else '')
-        if promedio is None:
-            row.append('Sin notas')
-        elif promedio >= 4.0:
-            row.append('Aprobado')
-        else:
-            row.append('Reprobado')
-        writer.writerow(row)
+                tipos_data[codigo] = {'label': label, 'promedio': round(float(avg_t), 1), 'count': nt.count()}
+        tipos_list = [tipos_data.get(c) for c, l in Nota.TIPO_CHOICES]
+        if promedio and promedio >= 4.0:
+            total_aprobados += 1
+        filas.append({
+            'alumno': alumno, 'total_notas': notas.count(),
+            'promedio': promedio, 'tipos_list': tipos_list,
+            'aprobado': (promedio >= 4.0) if promedio else None,
+        })
 
-    return response
+    promedios_validos = [f['promedio'] for f in filas if f['promedio']]
+    promedio_curso = round(sum(promedios_validos) / len(promedios_validos), 1) if promedios_validos else None
+
+    return render(request, 'notas/boletin_print.html', {
+        'curso': curso,
+        'filas': filas,
+        'promedio_curso': promedio_curso,
+        'total_aprobados': total_aprobados,
+        'total_reprobados': len(filas) - total_aprobados,
+        'tipo_choices': Nota.TIPO_CHOICES,
+    })

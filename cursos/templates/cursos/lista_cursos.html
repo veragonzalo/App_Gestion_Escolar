@@ -220,6 +220,9 @@
                                         <span class="material-symbols-outlined text-[18px]">visibility</span>
                                     </a>
                                     {% if perfil.puede_editar or user.is_superuser %}
+                                    <a href="{% url 'matricular_alumnos' curso.codigo %}" class="w-9 h-9 inline-flex items-center justify-center bg-[#002147] hover:bg-[#003063] text-white rounded-lg transition-all" title="Matricular alumnos">
+                                        <span class="material-symbols-outlined text-[18px]">group_add</span>
+                                    </a>
                                     <a href="{% url 'editar_curso' curso.codigo %}" class="w-9 h-9 inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all" title="Editar">
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </a>

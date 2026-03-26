@@ -86,10 +86,10 @@
             · {% if fecha_inicio %}desde {{ fecha_inicio }}{% endif %}{% if fecha_fin %} hasta {{ fecha_fin }}{% endif %}
             {% endif %}
           </span>
-          <a href="{% url 'exportar_resumen_csv' %}?curso={{ curso_codigo }}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}"
-             class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
-            <span class="material-symbols-outlined text-sm">download</span>
-            Exportar CSV
+          <a href="{% url 'imprimir_resumen' %}?curso={{ curso_codigo }}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}" target="_blank"
+             class="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+            Exportar PDF
           </a>
         </div>
       </div>
