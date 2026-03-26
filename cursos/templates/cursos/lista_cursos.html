@@ -94,32 +94,28 @@
 
         <div class="p-8">
 
-            {% if lista_cursos %}
+            <!-- Búsqueda -->
+            <form method="get" class="flex gap-3 mb-6">
+              <div class="relative flex-grow">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre o código..."
+                       class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147]">
+              </div>
+              <button type="submit" class="bg-[#002147] hover:bg-[#003063] text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors">Buscar</button>
+              {% if q %}<a href="{% url 'lista_cursos' %}" class="flex items-center gap-1 border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors"><span class="material-symbols-outlined text-lg">close</span>Limpiar</a>{% endif %}
+            </form>
+
+            {% if page_obj %}
 
             <!-- Estadísticas -->
             <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-
                 <div class="flex items-center gap-3">
-
-                    <span class="material-symbols-outlined text-blue-600 text-2xl">
-                        info
-                    </span>
-
+                    <span class="material-symbols-outlined text-blue-600 text-2xl">info</span>
                     <div>
-                        <p class="text-blue-900 font-semibold">
-                            Total de cursos registrados
-                        </p>
-
-                        <p class="text-blue-700 text-sm">
-                            Actualmente hay
-                            <strong>{{ lista_cursos|length }}</strong>
-                            curso{{ lista_cursos|length|pluralize:"s" }}
-                            en el sistema
-                        </p>
+                        <p class="text-blue-900 font-semibold">Total de cursos registrados</p>
+                        <p class="text-blue-700 text-sm">Actualmente hay <strong>{{ page_obj.paginator.count }}</strong> curso{{ page_obj.paginator.count|pluralize:"s" }} en el sistema</p>
                     </div>
-
                 </div>
-
             </div>
 
 
@@ -179,7 +175,7 @@
 
                     <tbody>
 
-                        {% for curso in lista_cursos %}
+                        {% for curso in page_obj %}
 
                         <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
 
@@ -282,6 +278,22 @@
 
             {% endif %}
 
+
+            {% if page_obj.has_other_pages %}
+            <div class="flex items-center justify-center gap-2 mt-6 pt-6 border-t border-slate-100">
+              {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="w-9 h-9 inline-flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined text-lg">chevron_left</span>
+              </a>
+              {% endif %}
+              <span class="text-sm text-slate-600">Página <strong>{{ page_obj.number }}</strong> de <strong>{{ page_obj.paginator.num_pages }}</strong></span>
+              {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="w-9 h-9 inline-flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined text-lg">chevron_right</span>
+              </a>
+              {% endif %}
+            </div>
+            {% endif %}
 
             <div class="flex justify-center mt-8 pt-8 border-t border-slate-200">
 

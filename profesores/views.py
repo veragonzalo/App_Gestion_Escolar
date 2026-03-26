@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import models
 from .models import Profesor
 from .forms import ProfesorForm
@@ -30,7 +31,9 @@ def lista_profesores(request):
             models.Q(rut__icontains=q) |
             models.Q(profesion__icontains=q)
         )
-    return render(request, 'profesores/lista_profesores.html', {"lista_profesores": profesores, "q": q})
+    paginator = Paginator(profesores, 15)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'profesores/lista_profesores.html', {"page_obj": page_obj, "q": q})
 
 
 @login_required

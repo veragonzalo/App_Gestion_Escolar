@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
 from .models import Comunicado
 from .forms import ComunicadoForm
 from usuarios.decorators import requiere_puede_editar
@@ -19,13 +21,19 @@ def inicio_comunicaciones(request):
 
 @login_required
 def lista_comunicados(request):
-    tipo = request.GET.get('tipo')
+    q = request.GET.get('q', '').strip()
+    tipo = request.GET.get('tipo', '')
     comunicados = Comunicado.objects.select_related('autor', 'curso')
     if tipo:
         comunicados = comunicados.filter(tipo=tipo)
+    if q:
+        comunicados = comunicados.filter(Q(titulo__icontains=q) | Q(contenido__icontains=q))
+    paginator = Paginator(comunicados, 15)
+    page_obj = paginator.get_page(request.GET.get('page'))
     return render(request, 'comunicaciones/lista.html', {
-        'comunicados': comunicados,
+        'page_obj': page_obj,
         'tipo_filtro': tipo,
+        'q': q,
     })
 
 

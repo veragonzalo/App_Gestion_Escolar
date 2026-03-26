@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
 from .models import Curso
 from .forms import CursoForm
 from usuarios.decorators import requiere_puede_editar
@@ -18,8 +20,15 @@ def portal_cursos(request):
 
 @login_required
 def lista_cursos(request):
+    q = request.GET.get('q', '').strip()
     cursos = Curso.objects.all()
-    return render(request, 'cursos/lista_cursos.html', {"lista_cursos": cursos})
+    if q:
+        cursos = cursos.filter(
+            Q(nombre__icontains=q) | Q(codigo__icontains=q)
+        )
+    paginator = Paginator(cursos, 15)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'cursos/lista_cursos.html', {"page_obj": page_obj, "q": q})
 
 
 @login_required

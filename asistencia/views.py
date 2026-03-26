@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from datetime import date, datetime
 from .models import Asistencia
+from .forms import AsistenciaForm
 from cursos.models import Curso
 from alumnos.models import Alumno
 from usuarios.decorators import requiere_academico
@@ -28,8 +30,10 @@ def lista_asistencia(request):
         asistencias = asistencias.filter(curso__codigo=curso_id)
     if fecha:
         asistencias = asistencias.filter(fecha=fecha)
+    paginator = Paginator(asistencias, 20)
+    page_obj = paginator.get_page(request.GET.get('page'))
     contexto = {
-        'asistencias': asistencias,
+        'page_obj': page_obj,
         'cursos': Curso.objects.all(),
         'filtro_curso': curso_id,
         'filtro_fecha': fecha,

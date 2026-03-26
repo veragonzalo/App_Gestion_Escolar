@@ -16,7 +16,7 @@
                     <span class="text-slate-700 font-medium">Todos</span>
                 </div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Todos los Comunicados</h1>
-                <p class="text-sm text-slate-500 mt-1">{{ comunicados|length }} comunicado{{ comunicados|length|pluralize }}</p>
+                <p class="text-sm text-slate-500 mt-1">{{ page_obj.paginator.count }} comunicado{{ page_obj.paginator.count|pluralize }}</p>
             </div>
             {% if perfil.puede_editar or user.is_superuser %}
             <a href="{% url 'crear_comunicado' %}"
@@ -30,7 +30,18 @@
 
     <main class="flex-grow w-full max-w-7xl mx-auto p-8">
 
-        <!-- Filtros -->
+        <!-- Búsqueda y filtros -->
+        <form method="get" class="flex gap-3 mb-4 flex-wrap items-end">
+          <div class="relative flex-grow min-w-[200px]">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+            <input type="text" name="q" value="{{ q }}" placeholder="Buscar en título o contenido..."
+                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#002147]/30 focus:border-[#002147]">
+          </div>
+          {% if tipo_filtro %}<input type="hidden" name="tipo" value="{{ tipo_filtro }}">{% endif %}
+          <button type="submit" class="bg-[#002147] hover:bg-[#003063] text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors">Buscar</button>
+          {% if q %}<a href="{% url 'lista_comunicados' %}{% if tipo_filtro %}?tipo={{ tipo_filtro }}{% endif %}" class="flex items-center gap-1 border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors"><span class="material-symbols-outlined text-lg">close</span>Limpiar</a>{% endif %}
+        </form>
+
         <div class="mb-6 flex items-center gap-3 flex-wrap">
             <span class="text-sm font-semibold text-slate-600">Filtrar:</span>
             <a href="{% url 'lista_comunicados' %}"
@@ -51,9 +62,9 @@
             </a>
         </div>
 
-        {% if comunicados %}
+        {% if page_obj %}
         <div class="flex flex-col gap-3">
-            {% for com in comunicados %}
+            {% for com in page_obj %}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 flex items-start gap-4 group">
                 <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
                     {% if com.tipo == 'UR' %}bg-red-100{% elif com.tipo == 'CI' %}bg-blue-100{% else %}bg-amber-100{% endif %}">
@@ -100,6 +111,22 @@
             </div>
             {% endfor %}
         </div>
+        {% if page_obj.has_other_pages %}
+        <div class="flex items-center justify-center gap-2 mt-6">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if q %}&q={{ q }}{% endif %}" class="w-9 h-9 inline-flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
+            <span class="material-symbols-outlined text-lg">chevron_left</span>
+          </a>
+          {% endif %}
+          <span class="text-sm text-slate-600">Página <strong>{{ page_obj.number }}</strong> de <strong>{{ page_obj.paginator.num_pages }}</strong></span>
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if q %}&q={{ q }}{% endif %}" class="w-9 h-9 inline-flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
+            <span class="material-symbols-outlined text-lg">chevron_right</span>
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
         {% else %}
         <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-16 text-center">
             <p class="text-slate-500">No hay comunicados para mostrar.</p>

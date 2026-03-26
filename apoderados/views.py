@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
 from .models import Apoderado
 from .forms import ApoderadoForm
 from usuarios.decorators import requiere_puede_editar
@@ -20,8 +22,15 @@ def portal_apoderados(request):
 
 @login_required
 def lista_apoderados(request):
+    q = request.GET.get('q', '').strip()
     apoderados = Apoderado.objects.prefetch_related('alumnos').all()
-    return render(request, 'apoderados/lista_apoderados.html', {'lista_apoderados': apoderados})
+    if q:
+        apoderados = apoderados.filter(
+            Q(nombre__icontains=q) | Q(apellido__icontains=q) | Q(rut__icontains=q) | Q(email__icontains=q)
+        )
+    paginator = Paginator(apoderados, 15)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'apoderados/lista_apoderados.html', {'page_obj': page_obj, 'q': q})
 
 
 @login_required

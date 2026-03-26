@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import models
 from django.db.models import Avg
 from .models import Alumno
@@ -30,7 +31,9 @@ def lista_alumnos(request):
             models.Q(apellido__icontains=q) |
             models.Q(rut__icontains=q)
         )
-    return render(request, 'alumnos/lista_alumnos.html', {"lista_alumnos": alumnos, "q": q})
+    paginator = Paginator(alumnos, 15)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'alumnos/lista_alumnos.html', {"page_obj": page_obj, "q": q})
 
 
 @login_required
