@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ asignatura.nombre }} - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+          <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a><span>›</span>
+          <a href="{% url 'inicio_horarios' %}" class="hover:text-[#002147]">Horarios</a><span>›</span>
+          <a href="{% url 'lista_asignaturas' %}" class="hover:text-[#002147]">Asignaturas</a><span>›</span>
+          <span class="text-slate-700 font-medium">{{ asignatura.nombre }}</span>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ asignatura.nombre }}</h1>
+        <p class="text-sm text-slate-400 font-mono mt-1">{{ asignatura.codigo }}</p>
+      </div>
+      {% if perfil.puede_editar or user.is_superuser %}
+      <div class="flex gap-3">
+        <a href="{% url 'editar_asignatura' asignatura.pk %}" class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-lg">edit</span>Editar
+        </a>
+        <a href="{% url 'eliminar_asignatura' asignatura.pk %}" class="flex items-center gap-2 border border-red-300 text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-600 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-lg">delete</span>Eliminar
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  <main class="flex-grow w-full max-w-5xl mx-auto p-8">
+    <h2 class="text-lg font-bold text-slate-800 mb-4">Bloques asignados ({{ bloques|length }})</h2>
+    {% if bloques %}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-100 bg-slate-50">
+            <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Curso</th>
+            <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Día</th>
+            <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Horario</th>
+            <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Profesor</th>
+            <th class="text-left py-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Sala</th>
+            {% if perfil.puede_editar or user.is_superuser %}<th></th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bloques %}
+          <tr class="border-b border-slate-50 hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ b.curso.nombre }}</td>
+            <td class="py-3 px-4 text-slate-600">{{ b.get_dia_semana_display }}</td>
+            <td class="py-3 px-4 text-slate-600 font-mono text-xs">{{ b.hora_inicio|time:"H:i" }} – {{ b.hora_fin|time:"H:i" }}</td>
+            <td class="py-3 px-4 text-slate-600">{{ b.profesor.nombre }} {{ b.profesor.apellido|default:"—" }}</td>
+            <td class="py-3 px-4 text-slate-400 text-xs">{{ b.sala|default:"—" }}</td>
+            {% if perfil.puede_editar or user.is_superuser %}
+            <td class="py-3 px-4">
+              <div class="flex gap-1.5 justify-center">
+                <a href="{% url 'editar_bloque' b.pk %}" class="w-8 h-8 inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all" title="Editar">
+                  <span class="material-symbols-outlined text-[16px]">edit</span>
+                </a>
+                <a href="{% url 'eliminar_bloque' b.pk %}" class="w-8 h-8 inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all" title="Eliminar">
+                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                </a>
+              </div>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+      <p class="text-slate-400 text-sm">Esta asignatura no tiene bloques asignados.</p>
+    </div>
+    {% endif %}
+    <div class="mt-6">
+      <a href="{% url 'lista_asignaturas' %}" class="inline-flex items-center gap-2 border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>Volver
+      </a>
+    </div>
+  </main>
+</div>
+{% endblock %}

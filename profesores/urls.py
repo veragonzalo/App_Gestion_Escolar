@@ -11,6 +11,7 @@ urlpatterns = [
     path('editar/<str:rut>/', views.editar_profesor, name='editar_profesor'),
 
     path('eliminar/<str:rut>/', views.eliminar_profesor, name='eliminar_profesor'),
+    path('perfil/<str:rut>/', views.perfil_profesor, name='perfil_profesor'),
 ]
 
 

@@ -5,6 +5,8 @@ from django.db import models
 from .models import Profesor
 from .forms import ProfesorForm
 from usuarios.decorators import requiere_puede_editar
+from notas.models import Nota
+from asistencia.models import Asistencia
 
 
 @login_required
@@ -82,3 +84,22 @@ def eliminar_profesor(request, rut):
         messages.success(request, f'Profesor {profesor.nombre} eliminado correctamente.')
         return redirect('lista_profesores')
     return render(request, 'profesores/confirmar_eliminar.html', {"profesor": profesor})
+
+
+@login_required
+def perfil_profesor(request, rut):
+    profesor = get_object_or_404(Profesor, rut=rut)
+    cursos = profesor.cursos.all()
+    bloques = profesor.bloques.select_related('curso', 'asignatura').order_by('dia_semana', 'hora_inicio')
+    DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
+    por_dia = {i: [] for i in range(5)}
+    for b in bloques:
+        por_dia[b.dia_semana].append(b)
+    horario_semana = [(DIAS[i], por_dia[i]) for i in range(5)]
+    return render(request, 'profesores/perfil_profesor.html', {
+        'profesor': profesor,
+        'cursos': cursos,
+        'horario_semana': horario_semana,
+        'tiene_horario': any(por_dia[i] for i in range(5)),
+        'total_bloques': bloques.count(),
+    })

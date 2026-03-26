@@ -168,6 +168,9 @@
 
 <td class="py-3 px-3">
 <div class="flex items-center justify-center gap-1.5">
+<a href="{% url 'perfil_profesor' profesor.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-[#002147] hover:bg-[#003063] text-white rounded-lg transition-all" title="Ver perfil">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</a>
 <a href="{% url 'detalle_profesor' profesor.rut %}" class="w-9 h-9 inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all" title="Ver detalle">
 <span class="material-symbols-outlined text-[18px]">visibility</span>
 </a>

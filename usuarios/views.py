@@ -65,3 +65,32 @@ def eliminar_usuario(request, pk):
         messages.success(request, 'Usuario eliminado.')
         return redirect('lista_usuarios')
     return render(request, 'usuarios/confirmar_eliminar.html', {'usuario': usuario})
+
+
+@login_required
+def cambiar_password(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+    # Solo directores/super pueden cambiar contraseña de otros; cualquiera puede cambiar la suya
+    try:
+        mi_perfil = request.user.perfil
+        es_director = mi_perfil.es_director()
+    except Exception:
+        es_director = request.user.is_superuser
+    if usuario != request.user and not es_director and not request.user.is_superuser:
+        messages.error(request, 'No tienes permiso para cambiar esta contraseña.')
+        return redirect('lista_usuarios')
+    if request.method == 'POST':
+        p1 = request.POST.get('password1', '')
+        p2 = request.POST.get('password2', '')
+        if not p1:
+            messages.error(request, 'La contraseña no puede estar vacía.')
+        elif p1 != p2:
+            messages.error(request, 'Las contraseñas no coinciden.')
+        elif len(p1) < 8:
+            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
+        else:
+            usuario.set_password(p1)
+            usuario.save()
+            messages.success(request, f'Contraseña de {usuario.username} actualizada correctamente.')
+            return redirect('lista_usuarios')
+    return render(request, 'usuarios/cambiar_password.html', {'usuario': usuario})

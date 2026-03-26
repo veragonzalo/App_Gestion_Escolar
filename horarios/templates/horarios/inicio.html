@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block titulo %}Horarios - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+          <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+          <span>›</span>
+          <span class="text-slate-700 font-medium">Horarios</span>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Horarios</h1>
+        <p class="text-sm text-slate-500 mt-1">Gestión de asignaturas y horarios semanales por curso</p>
+      </div>
+      {% if perfil.puede_editar or user.is_superuser %}
+      <div class="flex gap-3">
+        <a href="{% url 'crear_asignatura' %}" class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-lg">add</span>Nueva Asignatura
+        </a>
+        <a href="{% url 'crear_bloque' %}" class="flex items-center gap-2 bg-[#002147] text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
+          <span class="material-symbols-outlined text-lg">add</span>Agregar Bloque
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-indigo-600 text-2xl">menu_book</span>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_asignaturas }}</p>
+          <p class="text-sm text-slate-500">Asignaturas</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-emerald-600 text-2xl">schedule</span>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_bloques }}</p>
+          <p class="text-sm text-slate-500">Bloques asignados</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-blue-600 text-2xl">school</span>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-slate-900">{{ total_cursos }}</p>
+          <p class="text-sm text-slate-500">Cursos con horario</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Horarios por curso -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-800">Ver horario por curso</h2>
+        </div>
+        {% if cursos %}
+        <div class="space-y-2">
+          {% for curso in cursos %}
+          <a href="{% url 'horario_curso' curso.codigo %}" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-[#002147]/30 hover:bg-slate-50 transition-all group">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#002147] rounded-lg flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-white text-lg">school</span>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-800 text-sm">{{ curso.nombre }}</p>
+                <p class="text-xs text-slate-400">{{ curso.bloques.count }} bloque{{ curso.bloques.count|pluralize }}</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-300 group-hover:text-[#002147] transition-colors">chevron_right</span>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-slate-400 text-sm italic">No hay cursos registrados.</p>
+        {% endif %}
+      </div>
+
+      <!-- Asignaturas -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-800">Asignaturas</h2>
+          <a href="{% url 'lista_asignaturas' %}" class="text-xs text-[#002147] hover:underline font-semibold">Ver todas</a>
+        </div>
+        {% if asignaturas %}
+        <div class="flex flex-wrap gap-2">
+          {% for a in asignaturas %}
+          <a href="{% url 'detalle_asignatura' a.pk %}"
+             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-all
+             {% if a.color == 'blue' %}bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200
+             {% elif a.color == 'indigo' %}bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200
+             {% elif a.color == 'purple' %}bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200
+             {% elif a.color == 'rose' %}bg-rose-100 text-rose-700 border-rose-200 hover:bg-rose-200
+             {% elif a.color == 'red' %}bg-red-100 text-red-700 border-red-200 hover:bg-red-200
+             {% elif a.color == 'amber' %}bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200
+             {% elif a.color == 'green' %}bg-green-100 text-green-700 border-green-200 hover:bg-green-200
+             {% elif a.color == 'emerald' %}bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200
+             {% elif a.color == 'teal' %}bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200
+             {% elif a.color == 'cyan' %}bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200
+             {% else %}bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200{% endif %}">
+            <span class="material-symbols-outlined text-sm">menu_book</span>
+            {{ a.nombre }}
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-slate-400 text-sm italic">No hay asignaturas registradas.</p>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

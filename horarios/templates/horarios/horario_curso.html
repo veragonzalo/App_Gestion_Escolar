@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block titulo %}Horario {{ curso.nombre }} - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+  <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+          <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+          <span>›</span>
+          <a href="{% url 'inicio_horarios' %}" class="hover:text-[#002147]">Horarios</a>
+          <span>›</span>
+          <span class="text-slate-700 font-medium">{{ curso.nombre }}</span>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Horario — {{ curso.nombre }}</h1>
+        {% if curso.profesor %}<p class="text-sm text-slate-500 mt-1">Profesor jefe: {{ curso.profesor.nombre }} {{ curso.profesor.apellido }}</p>{% endif %}
+      </div>
+      <div class="flex gap-3">
+        <!-- Selector de curso -->
+        <form method="get" action="">
+          <select name="curso" onchange="window.location='/horarios/curso/'+this.value+'/'"
+                  class="border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#002147]/30">
+            {% for c in cursos %}
+            <option value="{{ c.codigo }}" {% if c.codigo == curso.codigo %}selected{% endif %}>{{ c.nombre }}</option>
+            {% endfor %}
+          </select>
+        </form>
+        {% if perfil.puede_editar or user.is_superuser %}
+        <a href="{% url 'crear_bloque' %}?curso={{ curso.codigo }}" class="flex items-center gap-2 bg-[#002147] text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#003063] transition-colors shadow">
+          <span class="material-symbols-outlined text-lg">add</span>Agregar bloque
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+    {% if tiene_bloques %}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="grid grid-cols-5 divide-x divide-slate-200">
+        {% for dia, bloques in horario_semana %}
+        <div>
+          <!-- Encabezado día -->
+          <div class="bg-slate-50 border-b border-slate-200 px-3 py-3 text-center">
+            <p class="text-xs font-bold text-slate-600 uppercase tracking-wider">{{ dia }}</p>
+          </div>
+          <!-- Bloques del día -->
+          <div class="p-2 space-y-2 min-h-[200px]">
+            {% for bloque in bloques %}
+            <div class="rounded-xl p-3 border-2 relative
+              {% if bloque.asignatura.color == 'blue' %}bg-blue-50 border-blue-200 text-blue-800
+              {% elif bloque.asignatura.color == 'indigo' %}bg-indigo-50 border-indigo-200 text-indigo-800
+              {% elif bloque.asignatura.color == 'purple' %}bg-purple-50 border-purple-200 text-purple-800
+              {% elif bloque.asignatura.color == 'rose' %}bg-rose-50 border-rose-200 text-rose-800
+              {% elif bloque.asignatura.color == 'red' %}bg-red-50 border-red-200 text-red-800
+              {% elif bloque.asignatura.color == 'amber' %}bg-amber-50 border-amber-200 text-amber-800
+              {% elif bloque.asignatura.color == 'green' %}bg-green-50 border-green-200 text-green-800
+              {% elif bloque.asignatura.color == 'emerald' %}bg-emerald-50 border-emerald-200 text-emerald-800
+              {% elif bloque.asignatura.color == 'teal' %}bg-teal-50 border-teal-200 text-teal-800
+              {% elif bloque.asignatura.color == 'cyan' %}bg-cyan-50 border-cyan-200 text-cyan-800
+              {% else %}bg-slate-50 border-slate-200 text-slate-800{% endif %}">
+              <p class="font-bold text-xs leading-tight">{{ bloque.asignatura.nombre }}</p>
+              <p class="text-xs mt-1 opacity-75">{{ bloque.hora_inicio|time:"H:i" }}–{{ bloque.hora_fin|time:"H:i" }}</p>
+              {% if bloque.profesor %}<p class="text-xs mt-0.5 opacity-60 truncate">{{ bloque.profesor.apellido }}</p>{% endif %}
+              {% if bloque.sala %}<p class="text-xs opacity-60">{{ bloque.sala }}</p>{% endif %}
+              {% if perfil.puede_editar or user.is_superuser %}
+              <div class="absolute top-1 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 hover:opacity-100">
+                <a href="{% url 'editar_bloque' bloque.pk %}" class="w-6 h-6 flex items-center justify-center bg-white/80 rounded-md hover:bg-amber-100 transition-colors" title="Editar">
+                  <span class="material-symbols-outlined text-xs text-amber-600">edit</span>
+                </a>
+                <a href="{% url 'eliminar_bloque' bloque.pk %}" class="w-6 h-6 flex items-center justify-center bg-white/80 rounded-md hover:bg-red-100 transition-colors" title="Eliminar">
+                  <span class="material-symbols-outlined text-xs text-red-600">delete</span>
+                </a>
+              </div>
+              {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-center py-4">
+              <p class="text-xs text-slate-300">—</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-16 text-center">
+      <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-slate-400 text-2xl">calendar_today</span>
+      </div>
+      <h3 class="text-xl font-bold text-slate-700 mb-2">Sin horario asignado</h3>
+      <p class="text-slate-500 text-sm mb-6">Este curso no tiene bloques horarios registrados.</p>
+      {% if perfil.puede_editar or user.is_superuser %}
+      <a href="{% url 'crear_bloque' %}?curso={{ curso.codigo }}" class="inline-flex items-center gap-2 bg-[#002147] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#003063] transition-colors">
+        <span class="material-symbols-outlined">add</span>Agregar primer bloque
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

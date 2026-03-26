@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar Bloque - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex items-center justify-center p-8">
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 max-w-md w-full text-center">
+    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-red-600 text-3xl">delete_forever</span>
+    </div>
+    <h2 class="text-xl font-bold text-slate-900 mb-2">¿Eliminar bloque?</h2>
+    <p class="text-slate-500 text-sm mb-3">Estás a punto de eliminar este bloque del horario:</p>
+    <div class="bg-slate-50 rounded-xl p-4 mb-6 text-left space-y-1">
+      <p class="text-sm"><span class="font-semibold text-slate-600">Curso:</span> {{ bloque.curso.nombre }}</p>
+      <p class="text-sm"><span class="font-semibold text-slate-600">Asignatura:</span> {{ bloque.asignatura.nombre }}</p>
+      <p class="text-sm"><span class="font-semibold text-slate-600">Día:</span> {{ bloque.get_dia_semana_display }}</p>
+      <p class="text-sm"><span class="font-semibold text-slate-600">Horario:</span> {{ bloque.hora_inicio|time:"H:i" }} – {{ bloque.hora_fin|time:"H:i" }}</p>
+    </div>
+    <form method="post" class="flex gap-3 justify-center">
+      {% csrf_token %}
+      <button type="submit" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-colors">
+        <span class="material-symbols-outlined text-lg">delete</span>Sí, eliminar
+      </button>
+      <a href="{% url 'inicio_horarios' %}" class="flex items-center gap-2 border border-slate-200 text-slate-600 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors">
+        Cancelar
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}

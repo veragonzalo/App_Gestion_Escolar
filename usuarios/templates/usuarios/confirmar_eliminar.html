@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar Usuario - Gestión Liceo Digital{% endblock %}
+{% block contenido %}
+<div class="flex-grow flex items-center justify-center p-8">
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 max-w-md w-full text-center">
+    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-red-600 text-3xl">person_remove</span>
+    </div>
+    <h2 class="text-xl font-bold text-slate-900 mb-2">¿Eliminar usuario?</h2>
+    <p class="text-slate-500 text-sm mb-1">Estás a punto de eliminar la cuenta:</p>
+    <p class="font-bold text-slate-800 text-lg mb-1">{{ usuario.username }}</p>
+    <p class="text-sm text-slate-400 mb-2">{{ usuario.get_full_name }}</p>
+    {% if usuario.perfil %}
+    <p class="text-xs text-slate-400 mb-6">Rol: {{ usuario.perfil.get_rol_display }}</p>
+    {% endif %}
+    <p class="text-sm text-red-600 bg-red-50 rounded-xl p-3 mb-6">Esta acción es irreversible y eliminará todos los datos asociados al usuario.</p>
+    <form method="post" class="flex gap-3 justify-center">
+      {% csrf_token %}
+      <button type="submit" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-colors">
+        <span class="material-symbols-outlined text-lg">delete</span>Sí, eliminar
+      </button>
+      <a href="{% url 'lista_usuarios' %}" class="flex items-center gap-2 border border-slate-200 text-slate-600 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors">
+        Cancelar
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}
