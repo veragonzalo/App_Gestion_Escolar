@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'notas.apps.NotasConfig',
     'apoderados.apps.ApoderadosConfig',
     'horarios.apps.HorariosConfig',
+    'comunicaciones.apps.ComunicacionesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

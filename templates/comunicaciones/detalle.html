@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ comunicado.titulo }} - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                    <span>›</span>
+                    <a href="{% url 'inicio_comunicaciones' %}" class="hover:text-[#002147]">Comunicaciones</a>
+                    <span>›</span>
+                    <span class="text-slate-700 font-medium truncate max-w-xs">{{ comunicado.titulo }}</span>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ comunicado.titulo }}</h1>
+            </div>
+            <div class="flex gap-3">
+                <a href="{% url 'editar_comunicado' comunicado.pk %}"
+                   class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                    Editar
+                </a>
+                <a href="{% url 'eliminar_comunicado' comunicado.pk %}"
+                   class="flex items-center gap-2 border border-red-300 text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-600 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">delete</span>
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-4xl mx-auto p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Contenido principal -->
+            <div class="lg:col-span-2">
+                <!-- Badge tipo -->
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
+                        {% if comunicado.tipo == 'UR' %}bg-red-100{% elif comunicado.tipo == 'CI' %}bg-blue-100{% else %}bg-amber-100{% endif %}">
+                        <span class="material-symbols-outlined text-2xl
+                            {% if comunicado.tipo == 'UR' %}text-red-600{% elif comunicado.tipo == 'CI' %}text-blue-600{% else %}text-amber-600{% endif %}">
+                            {{ comunicado.icono_tipo }}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-sm font-bold px-3 py-1 rounded-full
+                            {% if comunicado.tipo == 'UR' %}bg-red-100 text-red-700{% elif comunicado.tipo == 'CI' %}bg-blue-100 text-blue-700{% else %}bg-amber-100 text-amber-700{% endif %}">
+                            {{ comunicado.get_tipo_display }}
+                        </span>
+                        {% if not comunicado.activo %}
+                        <span class="ml-2 text-sm bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-medium">Inactivo</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Contenido -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                    <div class="prose prose-slate max-w-none">
+                        <p class="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">{{ comunicado.contenido }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadatos -->
+            <div class="space-y-4">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Detalles</h3>
+
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Destinatarios</p>
+                        <p class="font-semibold text-slate-800">{{ comunicado.get_destinatarios_display }}</p>
+                        {% if comunicado.curso %}
+                        <p class="text-sm text-slate-500 mt-0.5">{{ comunicado.curso.nombre }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Autor</p>
+                        <p class="font-semibold text-slate-800">{{ comunicado.autor.get_full_name|default:comunicado.autor.username }}</p>
+                    </div>
+
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Publicado</p>
+                        <p class="font-semibold text-slate-800">{{ comunicado.fecha_publicacion|date:"d/m/Y" }}</p>
+                        <p class="text-sm text-slate-500">{{ comunicado.fecha_publicacion|time:"H:i" }}</p>
+                    </div>
+
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Estado</p>
+                        {% if comunicado.activo %}
+                        <span class="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            Activo
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 text-sm font-semibold text-slate-400">
+                            <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
+                            Inactivo
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <a href="{% url 'lista_comunicados' %}"
+                   class="flex items-center justify-center gap-2 w-full border border-slate-200 text-slate-600 py-3 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    Volver a la lista
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

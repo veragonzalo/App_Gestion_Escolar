@@ -21,6 +21,7 @@ urlpatterns = [
     path("notas/", include("notas.urls")),
     path("apoderados/", include("apoderados.urls")),
     path("horarios/", include("horarios.urls")),
+    path("comunicaciones/", include("comunicaciones.urls")),
 
     # Autenticación
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
