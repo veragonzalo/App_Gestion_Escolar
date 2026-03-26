@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block titulo %}Horarios - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <!-- Breadcrumb -->
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                    <span>›</span>
+                    <span class="text-slate-700 font-medium">Horarios</span>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Módulo de Horarios</h1>
+                <p class="text-sm text-slate-500 mt-1">Gestión de horarios semanales por curso y asignaturas</p>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+
+        <!-- Hero -->
+        <section class="mb-10">
+            <div class="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                <div class="relative h-52">
+                    <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1200&h=300&fit=crop"
+                         alt="Horarios" class="absolute inset-0 w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-gradient-to-r from-violet-900/95 via-violet-800/85 to-violet-700/60"></div>
+                    <div class="relative z-10 h-full flex items-center px-10">
+                        <div>
+                            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full mb-4 border border-white/30">
+                                <span class="material-symbols-outlined text-white text-lg">calendar_month</span>
+                                <span class="text-white text-sm font-semibold">Horarios Semanales</span>
+                            </div>
+                            <h2 class="text-white text-3xl font-extrabold mb-2">Planificación Horaria</h2>
+                            <p class="text-white/80 text-base">Organiza los bloques de clases por curso, asignatura y profesor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="mb-10">
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-violet-600 text-2xl">calendar_month</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold text-slate-900">{{ total_bloques }}</p>
+                        <p class="text-sm text-slate-500">Bloques registrados</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-600 text-2xl">menu_book</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold text-slate-900">{{ total_asignaturas }}</p>
+                        <p class="text-sm text-slate-500">Asignaturas</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-emerald-600 text-2xl">groups</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold text-slate-900">{{ total_cursos }}</p>
+                        <p class="text-sm text-slate-500">Cursos con horario</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accesos rápidos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+
+            <!-- Ver horario por curso -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-violet-600">table_chart</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">Ver horario por Curso</h3>
+                </div>
+                {% if cursos %}
+                <div class="flex flex-col gap-2">
+                    {% for curso in cursos %}
+                    <a href="{% url 'horario_curso' curso.pk %}"
+                       class="flex items-center justify-between px-4 py-3 rounded-xl border border-slate-100 hover:border-violet-300 hover:bg-violet-50 transition-all group">
+                        <span class="font-medium text-slate-700 group-hover:text-violet-700">{{ curso.nombre }}</span>
+                        <span class="material-symbols-outlined text-slate-400 group-hover:text-violet-500 text-sm">arrow_forward</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-slate-400 text-sm">No hay cursos registrados.</p>
+                {% endif %}
+            </div>
+
+            <!-- Asignaturas y acciones -->
+            <div class="flex flex-col gap-4">
+                <a href="{% url 'lista_asignaturas' %}"
+                   class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow-lg transition-all flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-white text-xl">menu_book</span>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Asignaturas</p>
+                        <p class="text-sm text-slate-500">Gestionar materias del plan de estudios</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'crear_bloque' %}"
+                   class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-violet-300 shadow-sm hover:shadow-lg transition-all flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center shadow group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-white text-xl">add_circle</span>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 group-hover:text-violet-600 transition-colors">Agregar Bloque</p>
+                        <p class="text-sm text-slate-500">Crear nuevo bloque en el horario semanal</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'lista_bloques' %}"
+                   class="group bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-lg transition-all flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-white text-xl">list</span>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 transition-colors">Todos los Bloques</p>
+                        <p class="text-sm text-slate-500">Ver listado completo de bloques horarios</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block titulo %}Eliminar Bloque - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                <span>›</span>
+                <a href="{% url 'inicio_horarios' %}" class="hover:text-[#002147]">Horarios</a>
+                <span>›</span>
+                <span class="text-red-600 font-medium">Eliminar Bloque</span>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Eliminar Bloque</h1>
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-lg mx-auto p-8">
+        <div class="bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden">
+            <div class="bg-gradient-to-r from-red-500 to-red-600 px-8 py-5 flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">warning</span>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold text-lg">¿Eliminar este bloque?</h2>
+                    <p class="text-red-100 text-sm">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+            <div class="p-8">
+                <div class="bg-slate-50 rounded-xl p-4 mb-6 space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 font-medium">Curso:</span>
+                        <span class="font-bold text-slate-800">{{ bloque.curso.nombre }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 font-medium">Asignatura:</span>
+                        <span class="font-bold text-slate-800">{{ bloque.asignatura.nombre }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 font-medium">Día:</span>
+                        <span class="font-bold text-slate-800">{{ bloque.get_dia_semana_display }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 font-medium">Horario:</span>
+                        <span class="font-bold text-slate-800">{{ bloque.hora_inicio|time:"H:i" }} – {{ bloque.hora_fin|time:"H:i" }}</span>
+                    </div>
+                    {% if bloque.profesor %}
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 font-medium">Profesor:</span>
+                        <span class="font-bold text-slate-800">{{ bloque.profesor.nombre }} {{ bloque.profesor.apellido }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <form method="post" class="flex flex-col gap-3">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors">
+                        Sí, eliminar bloque
+                    </button>
+                    <a href="{% url 'horario_curso' bloque.curso.pk %}"
+                       class="w-full text-center border border-slate-300 text-slate-700 py-3 rounded-xl font-semibold hover:bg-slate-50 transition-colors">
+                        Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'asistencia.apps.AsistenciaConfig',
     'notas.apps.NotasConfig',
     'apoderados.apps.ApoderadosConfig',
+    'horarios.apps.HorariosConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ asignatura.nombre }} - Gestión Liceo Digital{% endblock %}
+
+{% block contenido %}
+<div class="flex-grow flex flex-col">
+
+    <section class="bg-white border-b border-slate-200 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <a href="{% url 'inicio' %}" class="hover:text-[#002147]">Inicio</a>
+                    <span>›</span>
+                    <a href="{% url 'inicio_horarios' %}" class="hover:text-[#002147]">Horarios</a>
+                    <span>›</span>
+                    <a href="{% url 'lista_asignaturas' %}" class="hover:text-[#002147]">Asignaturas</a>
+                    <span>›</span>
+                    <span class="text-slate-700 font-medium">{{ asignatura.nombre }}</span>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ asignatura.nombre }}</h1>
+                <p class="text-sm text-slate-500 mt-1">Código: <span class="font-semibold">{{ asignatura.codigo }}</span></p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{% url 'editar_asignatura' asignatura.pk %}"
+                   class="flex items-center gap-2 border border-[#002147] text-[#002147] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#002147] hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                    Editar
+                </a>
+                <a href="{% url 'eliminar_asignatura' asignatura.pk %}"
+                   class="flex items-center gap-2 border border-red-300 text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-600 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">delete</span>
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Info -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-lg font-bold text-slate-900 mb-4">Información</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Nombre</p>
+                        <p class="text-slate-800 font-semibold mt-1">{{ asignatura.nombre }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Código</p>
+                        <p class="text-slate-800 font-semibold mt-1">{{ asignatura.codigo }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Color</p>
+                        <p class="text-slate-800 font-semibold mt-1 capitalize">{{ asignatura.color }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Bloques asignados</p>
+                        <p class="text-2xl font-extrabold text-[#002147] mt-1">{{ bloques|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloques donde aparece -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-lg font-bold text-slate-900 mb-4">Bloques horarios asignados</h2>
+                {% if bloques %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-100">
+                                <th class="text-left py-2 px-3 text-xs font-bold text-slate-500 uppercase">Curso</th>
+                                <th class="text-left py-2 px-3 text-xs font-bold text-slate-500 uppercase">Día</th>
+                                <th class="text-left py-2 px-3 text-xs font-bold text-slate-500 uppercase">Horario</th>
+                                <th class="text-left py-2 px-3 text-xs font-bold text-slate-500 uppercase">Profesor</th>
+                                <th class="text-left py-2 px-3 text-xs font-bold text-slate-500 uppercase">Sala</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            {% for bloque in bloques %}
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-3 font-semibold text-slate-800">{{ bloque.curso.nombre }}</td>
+                                <td class="py-3 px-3 text-slate-600">{{ bloque.get_dia_semana_display }}</td>
+                                <td class="py-3 px-3 text-slate-600">{{ bloque.hora_inicio|time:"H:i" }} – {{ bloque.hora_fin|time:"H:i" }}</td>
+                                <td class="py-3 px-3 text-slate-600">
+                                    {% if bloque.profesor %}{{ bloque.profesor.nombre }} {{ bloque.profesor.apellido }}{% else %}—{% endif %}
+                                </td>
+                                <td class="py-3 px-3 text-slate-400">{{ bloque.sala|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-slate-400 text-sm">Esta asignatura aún no tiene bloques asignados en ningún horario.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
